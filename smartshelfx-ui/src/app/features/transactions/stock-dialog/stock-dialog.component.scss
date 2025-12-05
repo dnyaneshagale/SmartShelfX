@@ -1,0 +1,42 @@
+.full-width {
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+h2[mat-dialog-title] {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 1rem 1.5rem;
+
+    mat-icon {
+        font-size: 1.5rem;
+        width: 1.5rem;
+        height: 1.5rem;
+
+        &.stock-in {
+            color: #10b981;
+        }
+
+        &.stock-out {
+            color: #ef4444;
+        }
+    }
+}
+
+mat-dialog-content {
+    padding: 0 1.5rem;
+    min-width: 400px;
+}
+
+mat-dialog-actions {
+    padding: 1rem 1.5rem;
+    gap: 0.5rem;
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}

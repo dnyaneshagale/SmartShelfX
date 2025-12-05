@@ -1,0 +1,15 @@
+﻿.forecast-container { display: flex; flex-direction: column; gap: 1.5rem; }
+.forecast-controls .control-row { display: flex; gap: 1rem; align-items: center; }
+.forecast-controls mat-form-field { flex: 1; max-width: 400px; }
+.forecast-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+.stat-card mat-card-content { display: flex; align-items: center; gap: 1rem; padding: 1.5rem; }
+.stat-icon { width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #3b82f6; }
+.stat-icon mat-icon { color: white; }
+.stat-icon.predicted { background: #10b981; }
+.stat-icon.reorder { background: #f59e0b; }
+.stat-icon.confidence { background: #8b5cf6; }
+.stat-details { display: flex; flex-direction: column; }
+.stat-value { font-size: 1.5rem; font-weight: 700; }
+.stat-label { color: #64748b; font-size: 0.875rem; }
+.chart-card mat-card-content { height: 350px; }
+.loading-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 3rem; }

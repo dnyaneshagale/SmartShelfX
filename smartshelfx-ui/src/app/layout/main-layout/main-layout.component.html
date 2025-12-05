@@ -1,0 +1,61 @@
+﻿<mat-sidenav-container class="layout-container">
+  <mat-sidenav mode="side" opened [class.collapsed]="!isExpanded" class="sidenav">
+    <div class="sidenav-header">
+      <div class="logo" *ngIf="isExpanded">
+        <mat-icon>inventory_2</mat-icon>
+        <span>SmartShelfX</span>
+      </div>
+      <mat-icon *ngIf="!isExpanded" class="logo-icon">inventory_2</mat-icon>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <mat-nav-list>
+      <a mat-list-item *ngFor="let item of getFilteredNavItems()"
+         [routerLink]="item.route"
+         routerLinkActive="active"
+         [matTooltip]="!isExpanded ? item.label : ''">
+        <mat-icon matListItemIcon>{{item.icon}}</mat-icon>
+        <span matListItemTitle *ngIf="isExpanded">{{item.label}}</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" class="toolbar">
+      <button mat-icon-button (click)="toggleSidenav()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="toolbar-title">SmartShelfX</span>
+      <span class="spacer"></span>
+
+      <button mat-icon-button [matBadge]="notificationCount" matBadgeColor="warn" matBadgeSize="small" [matBadgeHidden]="notificationCount === 0" routerLink="/notifications">
+        <mat-icon>notifications</mat-icon>
+      </button>
+
+      <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-button">
+        <div class="user-avatar">{{getUserInitials()}}</div>
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <div class="user-info" mat-menu-item disabled>
+          <strong>{{currentUser?.username}}</strong>
+          <span class="role-badge">{{currentUser?.role}}</span>
+        </div>
+        <mat-divider></mat-divider>
+        <button mat-menu-item routerLink="/profile">
+          <mat-icon>person</mat-icon>
+          <span>Profile</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+    </mat-toolbar>
+
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

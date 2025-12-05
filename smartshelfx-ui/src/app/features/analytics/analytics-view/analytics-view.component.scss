@@ -1,0 +1,109 @@
+﻿.analytics-container {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.header-card {
+    mat-card-header {
+        padding: 1rem 1.5rem;
+    }
+
+    mat-card-content {
+        padding: 0 1.5rem 1.5rem;
+    }
+
+    .export-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+
+        button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    }
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.stat-card {
+    mat-card-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.5rem;
+    }
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    mat-icon {
+        color: white;
+        font-size: 1.5rem;
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    &.total {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+    }
+
+    &.instock {
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
+
+    &.lowstock {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    &.value {
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    }
+}
+
+.stat-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.stat-label {
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+.chart-card {
+    mat-card-header {
+        padding: 1rem 1.5rem 0;
+    }
+
+    mat-card-content {
+        height: 400px;
+        padding: 1rem;
+    }
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+}

@@ -1,0 +1,26 @@
+﻿.product-form-card {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-row mat-form-field {
+  flex: 1;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}

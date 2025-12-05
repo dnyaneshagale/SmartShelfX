@@ -1,0 +1,70 @@
+﻿<mat-card class="product-form-card">
+  <mat-card-header>
+    <mat-card-title>{{isEditMode ? 'Edit Product' : 'Add Product'}}</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Product Name</mat-label>
+          <input matInput formControlName="name" placeholder="Enter product name">
+          <mat-error *ngIf="productForm.get('name')?.hasError('required')">Name is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>SKU</mat-label>
+          <input matInput formControlName="sku" placeholder="Enter SKU">
+          <mat-error *ngIf="productForm.get('sku')?.hasError('required')">SKU is required</mat-error>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" rows="3" placeholder="Enter description"></textarea>
+      </mat-form-field>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Category</mat-label>
+          <mat-select formControlName="categoryId">
+            <mat-option *ngFor="let cat of categories" [value]="cat.id">{{cat.name}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="productForm.get('categoryId')?.hasError('required')">Category is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Quantity</mat-label>
+          <input matInput type="number" formControlName="quantity" placeholder="Enter quantity">
+          <mat-error *ngIf="productForm.get('quantity')?.hasError('required')">Quantity is required</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Price</mat-label>
+          <input matInput type="number" formControlName="price" placeholder="Enter price">
+          <mat-icon matPrefix>attach_money</mat-icon>
+          <mat-error *ngIf="productForm.get('price')?.hasError('required')">Price is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Reorder Level</mat-label>
+          <input matInput type="number" formControlName="reorderLevel" placeholder="Minimum stock level">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Reorder Quantity</mat-label>
+          <input matInput type="number" formControlName="reorderQuantity" placeholder="Quantity to reorder">
+        </mat-form-field>
+      </div>
+
+      <div class="form-actions">
+        <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="productForm.invalid || isLoading">
+          {{isEditMode ? 'Update' : 'Create'}} Product
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

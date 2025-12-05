@@ -1,0 +1,55 @@
+<div class="notifications-container">
+    <mat-card class="notifications-card">
+        <mat-card-header>
+            <mat-card-title>
+                <mat-icon>notifications</mat-icon>
+                Notifications
+            </mat-card-title>
+            <mat-card-subtitle>Manage your alerts and notifications</mat-card-subtitle>
+            <div class="header-actions">
+                <button mat-stroked-button color="primary" (click)="markAllAsRead()"
+                    [disabled]="notifications.length === 0">
+                    <mat-icon>done_all</mat-icon>
+                    Mark All Read
+                </button>
+            </div>
+        </mat-card-header>
+
+        <mat-card-content>
+            <div *ngIf="isLoading" class="loading-spinner">
+                <mat-spinner diameter="40"></mat-spinner>
+            </div>
+
+            <div *ngIf="!isLoading && notifications.length === 0" class="empty-state">
+                <mat-icon>notifications_off</mat-icon>
+                <p>No notifications yet</p>
+            </div>
+
+            <mat-list *ngIf="!isLoading && notifications.length > 0">
+                <mat-list-item *ngFor="let notification of notifications" [class.unread]="!notification.read"
+                    class="notification-item">
+                    <mat-icon matListItemIcon [class]="notification.type.toLowerCase()">
+                        {{getNotificationIcon(notification.type)}}
+                    </mat-icon>
+                    <div matListItemTitle class="notification-title">{{notification.title}}</div>
+                    <div matListItemLine class="notification-message">{{notification.message}}</div>
+                    <div matListItemLine class="notification-meta">
+                        <mat-chip size="small" [color]="getNotificationColor(notification.type)">
+                            {{notification.type.replace('_', ' ')}}
+                        </mat-chip>
+                        <span class="notification-time">{{notification.createdAt | date:'short'}}</span>
+                    </div>
+                    <div matListItemMeta class="notification-actions">
+                        <button mat-icon-button *ngIf="!notification.read" (click)="markAsRead(notification)"
+                            matTooltip="Mark as read">
+                            <mat-icon>check</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="deleteNotification(notification)" matTooltip="Delete">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </mat-list-item>
+            </mat-list>
+        </mat-card-content>
+    </mat-card>
+</div>

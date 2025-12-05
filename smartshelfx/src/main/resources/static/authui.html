@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login & Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            width: 350px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .toggle {
+            text-align: center;
+            margin-top: 15px;
+            cursor: pointer;
+            color: #007bff;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container" id="loginBox">
+    <h2>Login</h2>
+    <input type="text" placeholder="Username" id="loginUser" />
+    <input type="password" placeholder="Password" id="loginPass" />
+    <button onclick="login()">Login</button>
+    <div class="toggle" onclick="showRegister()">Don't have an account? Register</div>
+</div>
+
+<div class="container" id="registerBox" style="display:none;">
+    <h2>Register</h2>
+    <input type="text" placeholder="Username" id="regUser" />
+    <input type="email" placeholder="Email" id="regEmail" />
+
+    <select id="regRole">
+<!--        <option value="ADMIN">ADMIN</option>-->
+        <option value="WAREHOUSEMANAGER">WAREHOUSEMANAGER</option>
+        <option value="VENDOR">VENDOR</option>
+    </select>
+
+    <input type="password" placeholder="Password" id="regPass" />
+    <button onclick="register()">Register</button>
+    <div class="toggle" onclick="showLogin()">Already have an account? Login</div>
+</div>
+
+<script>
+    function showRegister() {
+        document.getElementById('loginBox').style.display = 'none';
+        document.getElementById('registerBox').style.display = 'block';
+    }
+
+    function showLogin() {
+        document.getElementById('registerBox').style.display = 'none';
+        document.getElementById('loginBox').style.display = 'block';
+    }
+
+    function login() {
+        const username = document.getElementById('loginUser').value;
+        const password = document.getElementById('loginPass').value;
+
+        fetch('http://localhost:8080/api/auth/public/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        })
+            .then(async res => {
+                if (!res.ok) throw new Error('Invalid credentials');
+                return res.json();
+            })
+            .then(data => {
+                localStorage.setItem("token", data.token);
+                window.location.href = "/hello.html";
+            })
+            .catch(err => alert(err.message));
+    }
+
+    function register() {
+        const username = document.getElementById('regUser').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPass').value;
+        const role = document.getElementById("regRole").value;
+
+        fetch('http://localhost:8080/api/auth/public/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, roles: role, password })
+        })
+            .then(async res => {
+                const txt = await res.text(); // backend returns plain text
+                alert(txt);
+                showLogin();
+            })
+            .catch(err => console.error(err));
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+﻿@use '@angular/material' as mat;
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.mat-mdc-snack-bar-container {
+  &.success-snackbar {
+    --mdc-snackbar-container-color: #10b981;
+  }
+  &.error-snackbar {
+    --mdc-snackbar-container-color: #ef4444;
+  }
+}

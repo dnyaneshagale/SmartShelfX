@@ -1,0 +1,114 @@
+﻿<div class="user-management-container">
+  <mat-card class="user-management-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>people</mat-icon>
+        User Management
+      </mat-card-title>
+      <mat-card-subtitle>Manage system users and their roles</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Search Bar -->
+      <div class="search-bar">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Search users</mat-label>
+          <input matInput [(ngModel)]="searchTerm" (keyup)="applyFilter()" placeholder="Search by username or email">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="loadUsers()">
+          <mat-icon>refresh</mat-icon>
+          Refresh
+        </button>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div class="loading-container" *ngIf="isLoading">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Loading users...</p>
+      </div>
+
+      <!-- Users Table -->
+      <div class="table-container" *ngIf="!isLoading">
+        <table mat-table [dataSource]="dataSource" matSort>
+          <!-- Username Column -->
+          <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Username</th>
+            <td mat-cell *matCellDef="let user">
+              <div class="user-cell">
+                <div class="user-avatar">{{ user.username?.substring(0, 2).toUpperCase() }}</div>
+                <span>{{ user.username }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Email Column -->
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+            <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+          </ng-container>
+
+          <!-- Role Column -->
+          <ng-container matColumnDef="role">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Role</th>
+            <td mat-cell *matCellDef="let user">
+              <mat-chip [color]="getRoleColor(user.role)" selected>
+                {{ getRoleDisplayName(user.role) }}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Status Column -->
+          <ng-container matColumnDef="enabled">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+            <td mat-cell *matCellDef="let user">
+              <mat-chip [color]="user.enabled ? 'primary' : 'warn'" selected>
+                {{ user.enabled ? 'Active' : 'Disabled' }}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let user">
+              <button mat-icon-button [matMenuTriggerFor]="roleMenu" matTooltip="Change Role">
+                <mat-icon>admin_panel_settings</mat-icon>
+              </button>
+              <mat-menu #roleMenu="matMenu">
+                <div class="menu-header">Change Role</div>
+                <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(user, role)"
+                  [disabled]="user.role === role">
+                  <mat-icon [class.active-role]="user.role === role">
+                    {{ user.role === role ? 'check' : 'person' }}
+                  </mat-icon>
+                  <span>{{ getRoleDisplayName(role) }}</span>
+                </button>
+              </mat-menu>
+
+              <button mat-icon-button (click)="toggleUserStatus(user)"
+                [matTooltip]="user.enabled ? 'Disable User' : 'Enable User'">
+                <mat-icon [color]="user.enabled ? 'warn' : 'primary'">
+                  {{ user.enabled ? 'block' : 'check_circle' }}
+                </mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <!-- No Data Row -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell no-data" colspan="5">
+              <mat-icon>search_off</mat-icon>
+              <span>No users found matching "{{ searchTerm }}"</span>
+            </td>
+          </tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
