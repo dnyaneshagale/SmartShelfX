@@ -60,6 +60,23 @@ public class ProductService {
         return products.map(this::toDTO);
     }
 
+    public Page<ProductDTO> getProductsByCreatedBy(Long createdBy, ProductFilterRequest filter) {
+        Sort sort = Sort.by(
+                filter.getSortDirection().equalsIgnoreCase("DESC") ? Sort.Direction.DESC : Sort.Direction.ASC,
+                filter.getSortBy());
+        Pageable pageable = PageRequest.of(filter.getPage(), filter.getSize(), sort);
+
+        Page<Product> products = productRepository.findByCreatedByWithFilters(
+                createdBy,
+                filter.getCategoryId(),
+                filter.getVendorId(),
+                filter.getStockStatus(),
+                filter.getSearchTerm(),
+                pageable);
+
+        return products.map(this::toDTO);
+    }
+
     public ProductDTO getProductById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -87,14 +104,15 @@ public class ProductService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Category not found with id: " + request.getCategoryId()));
 
-        // Validate vendor
+        // Validate vendor - allow VENDOR, ADMIN, or WAREHOUSEMANAGER
         User vendor = userRepository.findById(request.getVendorId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Vendor not found with id: " + request.getVendorId()));
 
-        if (vendor.getRole() != Role.VENDOR && vendor.getRole() != Role.ADMIN) {
+        if (vendor.getRole() != Role.VENDOR && vendor.getRole() != Role.ADMIN
+                && vendor.getRole() != Role.WAREHOUSEMANAGER) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "User is not a vendor: " + request.getVendorId());
+                    "User is not a valid vendor: " + request.getVendorId());
         }
 
         User currentUser = getCurrentUser();
@@ -261,8 +279,20 @@ public class ProductService {
                 .toList();
     }
 
+    public List<ProductDTO> getLowStockProductsByCreatedBy(Long createdBy) {
+        return productRepository.findLowStockProductsByCreatedBy(createdBy).stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
     public List<ProductDTO> getOutOfStockProducts() {
         return productRepository.findOutOfStockProducts().stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    public List<ProductDTO> getOutOfStockProductsByCreatedBy(Long createdBy) {
+        return productRepository.findOutOfStockProductsByCreatedBy(createdBy).stream()
                 .map(this::toDTO)
                 .toList();
     }
@@ -270,8 +300,8 @@ public class ProductService {
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
-            String username = authentication.getName();
-            return userRepository.findByUsername(username).orElse(null);
+            String email = authentication.getName(); // This is now email after our login change
+            return userRepository.findByEmail(email).orElse(null);
         }
         return null;
     }

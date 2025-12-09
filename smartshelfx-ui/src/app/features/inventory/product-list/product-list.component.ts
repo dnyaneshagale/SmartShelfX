@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+﻿import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
@@ -15,6 +15,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../../core/services/product.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { Product, Category, StockStatus, ProductFilter } from '../../../core/models';
 import { saveAs } from 'file-saver';
 
@@ -26,7 +27,7 @@ import { saveAs } from 'file-saver';
   styleUrl: './product-list.component.scss'
 })
 export class ProductListComponent implements OnInit {
-  displayedColumns = ['name', 'sku', 'category', 'quantity', 'status', 'unitPrice', 'actions'];
+  displayedColumns = ['name', 'sku', 'category', 'currentStock', 'stockStatus', 'unitPrice', 'actions'];
   dataSource = new MatTableDataSource<Product>();
   categories: Category[] = [];
   isLoading = true;
@@ -34,10 +35,16 @@ export class ProductListComponent implements OnInit {
   selectedCategory: number | null = null;
   selectedStatus: StockStatus | null = null;
 
+  private productService = inject(ProductService);
+  private authService = inject(AuthService);
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private productService: ProductService) {}
+  get isAdmin(): boolean {
+    const user = this.authService.getCurrentUser();
+    return user?.role === 'ADMIN';
+  }
 
   ngOnInit(): void {
     this.loadProducts();
@@ -70,8 +77,8 @@ export class ProductListComponent implements OnInit {
     const filter: ProductFilter = {};
     if (this.searchTerm) filter.searchTerm = this.searchTerm;
     if (this.selectedCategory) filter.categoryId = this.selectedCategory;
-    if (this.selectedStatus) filter.status = this.selectedStatus;
-    
+    if (this.selectedStatus) filter.stockStatus = this.selectedStatus;
+
     this.productService.filterProducts(filter).subscribe({
       next: (products: Product[]) => this.dataSource.data = products
     });
@@ -93,11 +100,39 @@ export class ProductListComponent implements OnInit {
   }
 
   exportToCsv(): void {
-    this.productService.exportCsv().subscribe({
-      next: (blob: Blob) => {
-        saveAs(blob, 'products.csv');
-      }
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      console.error('Current user not found');
+      return;
+    }
+
+    // Filter products for current user before export
+    const userProducts = this.dataSource.data;
+
+    if (userProducts.length === 0) {
+      alert('No products to export');
+      return;
+    }
+
+    // Create CSV content
+    const headers = ['Name', 'SKU', 'Category', 'Stock', 'Status', 'Price'];
+    const rows = userProducts.map(p => [
+      p.name,
+      p.sku,
+      p.categoryName || '',
+      p.currentStock || 0,
+      p.stockStatus || '',
+      p.unitPrice || 0
+    ]);
+
+    let csvContent = headers.join(',') + '\n';
+    rows.forEach(row => {
+      csvContent += row.map(cell => `"${cell}"`).join(',') + '\n';
     });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const filename = `products-${currentUser.username}-${new Date().getTime()}.csv`;
+    saveAs(blob, filename);
   }
 
   getStatusColor(status: StockStatus): string {

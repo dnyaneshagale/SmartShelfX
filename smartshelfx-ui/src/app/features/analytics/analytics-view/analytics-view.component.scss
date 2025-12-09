@@ -96,8 +96,32 @@
     }
 
     mat-card-content {
-        height: 400px;
-        padding: 1rem;
+        min-height: 450px;
+        padding: 2rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .chart-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+
+            ngx-charts-pie-chart {
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        .no-data {
+            padding: 2rem;
+            text-align: center;
+            color: #64748b;
+            font-size: 1rem;
+        }
     }
 }
 

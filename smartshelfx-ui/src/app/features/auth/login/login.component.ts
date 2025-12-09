@@ -29,7 +29,7 @@ export class LoginComponent {
     private router: Router
   ) {
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
@@ -38,9 +38,9 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
-      
-      const { username, password } = this.loginForm.value;
-      this.authService.login({ username, password }).subscribe({
+
+      const { email, password } = this.loginForm.value;
+      this.authService.login({ email, password }).subscribe({
         next: () => {
           this.isLoading = false;
           this.router.navigate(['/dashboard']);

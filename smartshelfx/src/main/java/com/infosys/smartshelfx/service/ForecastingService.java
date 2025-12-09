@@ -132,6 +132,16 @@ public class ForecastingService {
     }
 
     /**
+     * Get products at risk by createdBy (for Warehouse Managers)
+     */
+    public List<DemandForecastDTO> getProductsAtRiskByCreatedBy(Long createdBy) {
+        return demandForecastRepository.findProductsAtRiskByCreatedBy(createdBy)
+                .stream()
+                .map(this::toForecastDTO)
+                .toList();
+    }
+
+    /**
      * Get forecast history for a product
      */
     public Page<DemandForecastDTO> getForecastHistory(Long productId, int page, int size) {

@@ -57,8 +57,14 @@
 
   <mat-card class="chart-card" *ngIf="!isLoading">
     <mat-card-header><mat-card-title>Stock Distribution</mat-card-title></mat-card-header>
-    <mat-card-content>
-      <ngx-charts-pie-chart [results]="chartData" [scheme]="colorScheme" [legend]="true" [doughnut]="true"></ngx-charts-pie-chart>
+    <mat-card-content class="chart-content">
+      <div *ngIf="chartData && chartData.length > 0" class="chart-wrapper">
+        <ngx-charts-pie-chart [results]="chartData" [scheme]="colorScheme" [legend]="true"
+          [doughnut]="true"></ngx-charts-pie-chart>
+      </div>
+      <div *ngIf="!chartData || chartData.length === 0" class="no-data">
+        <p>No inventory data available</p>
+      </div>
     </mat-card-content>
   </mat-card>
 

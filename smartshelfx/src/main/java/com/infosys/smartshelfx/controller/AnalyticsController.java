@@ -28,7 +28,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/analytics")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('ADMIN', 'WAREHOUSE_MANAGER')")
+@PreAuthorize("hasAnyRole('ADMIN', 'WAREHOUSEMANAGER')")
 public class AnalyticsController {
 
     private final AnalyticsService analyticsService;

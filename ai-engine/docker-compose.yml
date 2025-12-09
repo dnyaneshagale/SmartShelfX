@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  ai-service:
+    build: .
+    container_name: smartshelfx-ai-engine
+    ports:
+      - "8000:8000"
+    environment:
+      - FLASK_ENV=production
+      - PORT=8000
+      - MAX_FORECAST_DAYS=30
+      - CONFIDENCE_THRESHOLD=0.7
+      - MIN_DATA_POINTS=10
+      - JAVA_BACKEND_URL=http://localhost:8080/api
+    restart: unless-stopped
+    networks:
+      - smartshelfx-network
+
+networks:
+  smartshelfx-network:
+    driver: bridge

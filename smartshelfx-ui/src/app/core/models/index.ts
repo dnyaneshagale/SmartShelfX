@@ -12,7 +12,7 @@ export interface User {
 export type Role = 'ADMIN' | 'WAREHOUSEMANAGER' | 'VENDOR' | 'USER';
 
 export interface LoginRequest {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -41,16 +41,18 @@ export interface Product {
   description: string;
   categoryId: number;
   categoryName?: string;
-  quantity: number;
-  minQuantity: number;
-  maxQuantity: number;
-  reorderPoint: number;
+  currentStock: number;
+  reorderLevel: number;
+  reorderQuantity: number;
   unitPrice: number;
   costPrice: number;
-  status: StockStatus;
-  location: string;
+  stockStatus: StockStatus;
+  imageUrl?: string;
+  unit?: string;
+  isActive?: boolean;
   vendorId?: number;
   vendorName?: string;
+  createdBy?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -62,26 +64,34 @@ export interface ProductCreateRequest {
   sku: string;
   description?: string;
   categoryId: number;
-  quantity: number;
-  minQuantity: number;
-  maxQuantity: number;
-  reorderPoint: number;
-  unitPrice: number;
-  costPrice: number;
-  location?: string;
-  vendorId?: number;
+  vendorId: number;
+  currentStock: number;
+  reorderLevel: number;
+  reorderQuantity: number;
+  unitPrice?: number;
+  costPrice?: number;
+  imageUrl?: string;
+  unit?: string;
 }
 
-export interface ProductUpdateRequest extends Partial<ProductCreateRequest> {
-  id: number;
+export interface ProductUpdateRequest {
+  name?: string;
+  description?: string;
+  categoryId?: number;
+  vendorId?: number;
+  reorderLevel?: number;
+  reorderQuantity?: number;
+  unitPrice?: number;
+  costPrice?: number;
+  imageUrl?: string;
+  unit?: string;
+  isActive?: boolean;
 }
 
 export interface ProductFilter {
   categoryId?: number;
-  status?: StockStatus;
+  stockStatus?: StockStatus;
   searchTerm?: string;
-  minQuantity?: number;
-  maxQuantity?: number;
 }
 
 // Category models
@@ -131,15 +141,26 @@ export interface StockUpdateRequest {
 
 // Forecast models
 export interface DemandForecast {
+  id?: number;
   productId: number;
   productName: string;
+  productSku?: string;
+  vendorName?: string;
   currentStock: number;
   predictedDemand: number;
-  recommendedReorder: number;
-  suggestedReorderQty?: number;
-  confidence?: number;
+  recommendedRestock: number;
   confidenceScore: number;
   forecastDate: Date;
+  forecastPeriod?: string;
+  lowerBound?: number;
+  upperBound?: number;
+  daysUntilStockout?: number;
+  isAtRisk?: boolean;
+  riskLevel?: string;
+  modelVersion?: string;
+  factors?: string;
+  createdAt?: Date;
+  suggestedAction?: string;
   trendData?: TrendDataPoint[];
 }
 
@@ -218,6 +239,7 @@ export type NotificationType = 'LOW_STOCK' | 'OUT_OF_STOCK' | 'REORDER_APPROVED'
 export interface DashboardResponse {
   totalProducts: number;
   totalCategories: number;
+  inStockCount: number;
   lowStockCount: number;
   outOfStockCount: number;
   totalValue: number;

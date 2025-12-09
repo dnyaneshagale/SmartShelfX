@@ -52,39 +52,43 @@
 
       <mat-card class="stat-card">
         <mat-card-content>
-          <div class="stat-icon"><mat-icon>shopping_cart</mat-icon></div>
+          <div class="stat-icon"><mat-icon>event</mat-icon></div>
           <div class="stat-info">
-            <span class="stat-value">{{selectedForecast.recommendedReorder}}</span>
-            <span class="stat-label">Recommended Reorder</span>
+            <span class="stat-value">{{selectedForecast.daysUntilStockout ?? 'N/A'}}</span>
+            <span class="stat-label">Days Until Stockout</span>
           </div>
         </mat-card-content>
       </mat-card>
 
       <mat-card class="stat-card">
         <mat-card-content>
-          <div class="stat-icon"><mat-icon>verified</mat-icon></div>
+          <div class="stat-icon"><mat-icon>shopping_cart</mat-icon></div>
           <div class="stat-info">
-            <span class="stat-value">{{selectedForecast.confidenceScore | percent}}</span>
-            <span class="stat-label">Confidence</span>
+            <span class="stat-value">{{selectedForecast.recommendedRestock}}</span>
+            <span class="stat-label">Recommended Restock</span>
           </div>
         </mat-card-content>
       </mat-card>
     </div>
+
+    <mat-card class="risk-card" *ngIf="selectedForecast.riskLevel">
+      <mat-card-content>
+        <div class="risk-info">
+          <mat-chip [color]="getRiskColor(selectedForecast.riskLevel)">
+            Risk: {{selectedForecast.riskLevel}}
+          </mat-chip>
+          <span class="action-text">{{selectedForecast.suggestedAction}}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
 
     <mat-card class="chart-card" *ngIf="forecastChartData.length > 0">
       <mat-card-header>
         <mat-card-title>Demand Forecast Trend</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <ngx-charts-line-chart
-          [results]="forecastChartData"
-          [scheme]="colorScheme"
-          [legend]="true"
-          [showXAxisLabel]="true"
-          [showYAxisLabel]="true"
-          [xAxis]="true"
-          [yAxis]="true"
-          xAxisLabel="Date"
+        <ngx-charts-line-chart [results]="forecastChartData" [scheme]="colorScheme" [legend]="true"
+          [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxis]="true" [yAxis]="true" xAxisLabel="Date"
           yAxisLabel="Quantity">
         </ngx-charts-line-chart>
       </mat-card-content>
@@ -93,7 +97,7 @@
 
   <mat-card class="table-card" *ngIf="forecasts.length > 0 && !isLoading">
     <mat-card-header>
-      <mat-card-title>All Forecasts</mat-card-title>
+      <mat-card-title>Products At Risk of Stockout</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <table mat-table [dataSource]="forecasts">
@@ -112,22 +116,36 @@
           <td mat-cell *matCellDef="let row">{{row.predictedDemand}}</td>
         </ng-container>
 
-        <ng-container matColumnDef="recommendedReorder">
-          <th mat-header-cell *matHeaderCellDef>Recommended Reorder</th>
-          <td mat-cell *matCellDef="let row">{{row.recommendedReorder}}</td>
+        <ng-container matColumnDef="daysUntilStockout">
+          <th mat-header-cell *matHeaderCellDef>Days Until Stockout</th>
+          <td mat-cell *matCellDef="let row">{{row.daysUntilStockout ?? 'N/A'}}</td>
         </ng-container>
 
-        <ng-container matColumnDef="confidenceScore">
-          <th mat-header-cell *matHeaderCellDef>Confidence</th>
+        <ng-container matColumnDef="riskLevel">
+          <th mat-header-cell *matHeaderCellDef>Risk Level</th>
           <td mat-cell *matCellDef="let row">
-            <mat-chip [color]="getConfidenceColor(row.confidenceScore)">
-              {{row.confidenceScore}}%
+            <mat-chip [color]="getRiskColor(row.riskLevel)">
+              {{row.riskLevel || 'N/A'}}
             </mat-chip>
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="['productName', 'currentStock', 'predictedDemand', 'recommendedReorder', 'confidenceScore']"></tr>
-        <tr mat-row *matRowDef="let row; columns: ['productName', 'currentStock', 'predictedDemand', 'recommendedReorder', 'confidenceScore'];"></tr>
+        <ng-container matColumnDef="recommendedRestock">
+          <th mat-header-cell *matHeaderCellDef>Recommended Restock</th>
+          <td mat-cell *matCellDef="let row">{{row.recommendedRestock}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="suggestedAction">
+          <th mat-header-cell *matHeaderCellDef>Suggested Action</th>
+          <td mat-cell *matCellDef="let row">{{row.suggestedAction || 'Monitor stock levels'}}</td>
+        </ng-container>
+
+        <tr mat-header-row
+          *matHeaderRowDef="['productName', 'currentStock', 'predictedDemand', 'daysUntilStockout', 'riskLevel', 'recommendedRestock', 'suggestedAction']">
+        </tr>
+        <tr mat-row
+          *matRowDef="let row; columns: ['productName', 'currentStock', 'predictedDemand', 'daysUntilStockout', 'riskLevel', 'recommendedRestock', 'suggestedAction'];">
+        </tr>
       </table>
     </mat-card-content>
   </mat-card>

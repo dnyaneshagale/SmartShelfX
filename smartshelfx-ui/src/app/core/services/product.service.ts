@@ -1,8 +1,9 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Product, ProductCreateRequest, ProductUpdateRequest, ProductFilter, Category, Page, StockStatus, DashboardResponse } from '../models';
+import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
@@ -10,16 +11,27 @@ export class ProductService {
   private warehouseUrl = `${environment.apiUrl}/warehouse`;
   private dashboardUrl = `${environment.apiUrl}/dashboard`;
 
-  constructor(private http: HttpClient) { }
+  private http = inject(HttpClient);
+  private authService = inject(AuthService);
+
+  private getBaseUrl(): string {
+    const user = this.authService.getCurrentUser();
+    return user?.role === 'ADMIN' ? this.adminUrl : this.warehouseUrl;
+  }
+
+  private isAdmin(): boolean {
+    const user = this.authService.getCurrentUser();
+    return user?.role === 'ADMIN';
+  }
 
   getAllProducts(page = 0, size = 20, filter?: ProductFilter): Observable<Page<Product>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
     if (filter?.categoryId) params = params.set('categoryId', filter.categoryId.toString());
-    if (filter?.status) params = params.set('stockStatus', filter.status);
+    if (filter?.stockStatus) params = params.set('stockStatus', filter.stockStatus);
     if (filter?.searchTerm) params = params.set('search', filter.searchTerm);
-    return this.http.get<Page<Product>>(`${this.adminUrl}/products`, { params });
+    return this.http.get<Page<Product>>(`${this.getBaseUrl()}/products`, { params });
   }
 
   // Returns products array (extracts content from Page)
@@ -27,23 +39,24 @@ export class ProductService {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
-    return this.http.get<Page<Product>>(`${this.adminUrl}/products`, { params })
+    return this.http.get<Page<Product>>(`${this.getBaseUrl()}/products`, { params })
       .pipe(map(p => p.content));
   }
 
   getProduct(id: number): Observable<Product> {
-    return this.http.get<Product>(`${this.adminUrl}/products/${id}`);
+    return this.http.get<Product>(`${this.getBaseUrl()}/products/${id}`);
   }
 
   createProduct(product: ProductCreateRequest): Observable<Product> {
-    return this.http.post<Product>(`${this.adminUrl}/products`, product);
+    return this.http.post<Product>(`${this.getBaseUrl()}/products`, product);
   }
 
   updateProduct(id: number, product: ProductUpdateRequest): Observable<Product> {
-    return this.http.put<Product>(`${this.adminUrl}/products/${id}`, product);
+    return this.http.put<Product>(`${this.getBaseUrl()}/products/${id}`, product);
   }
 
   deleteProduct(id: number): Observable<void> {
+    // Only admin can delete
     return this.http.delete<void>(`${this.adminUrl}/products/${id}`);
   }
 
@@ -52,18 +65,18 @@ export class ProductService {
       .set('page', '0')
       .set('size', '100');
     if (filter.categoryId) params = params.set('categoryId', filter.categoryId.toString());
-    if (filter.status) params = params.set('stockStatus', filter.status);
+    if (filter.stockStatus) params = params.set('stockStatus', filter.stockStatus);
     if (filter.searchTerm) params = params.set('search', filter.searchTerm);
-    return this.http.get<Page<Product>>(`${this.adminUrl}/products`, { params })
+    return this.http.get<Page<Product>>(`${this.getBaseUrl()}/products`, { params })
       .pipe(map(p => p.content));
   }
 
   getLowStockProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.adminUrl}/products/low-stock`);
+    return this.http.get<Product[]>(`${this.getBaseUrl()}/products/low-stock`);
   }
 
   getOutOfStockProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.adminUrl}/products/out-of-stock`);
+    return this.http.get<Product[]>(`${this.getBaseUrl()}/products/out-of-stock`);
   }
 
   getProductsByCategory(categoryId: number): Observable<Product[]> {
@@ -71,7 +84,7 @@ export class ProductService {
       .set('categoryId', categoryId.toString())
       .set('page', '0')
       .set('size', '100');
-    return this.http.get<Page<Product>>(`${this.adminUrl}/products`, { params })
+    return this.http.get<Page<Product>>(`${this.getBaseUrl()}/products`, { params })
       .pipe(map(p => p.content));
   }
 
@@ -80,7 +93,7 @@ export class ProductService {
       .set('stockStatus', status)
       .set('page', '0')
       .set('size', '100');
-    return this.http.get<Page<Product>>(`${this.adminUrl}/products`, { params })
+    return this.http.get<Page<Product>>(`${this.getBaseUrl()}/products`, { params })
       .pipe(map(p => p.content));
   }
 
@@ -89,12 +102,12 @@ export class ProductService {
       .set('search', term)
       .set('page', '0')
       .set('size', '50');
-    return this.http.get<Page<Product>>(`${this.adminUrl}/products`, { params })
+    return this.http.get<Page<Product>>(`${this.getBaseUrl()}/products`, { params })
       .pipe(map(p => p.content));
   }
 
   exportCsv(): Observable<Blob> {
-    return this.http.get(`${this.adminUrl}/products/export`, { responseType: 'blob' });
+    return this.http.get(`${this.getBaseUrl()}/products/export`, { responseType: 'blob' });
   }
 
   importCsv(file: File): Observable<any> {
@@ -108,7 +121,7 @@ export class ProductService {
   }
 
   getCategories(): Observable<Category[]> {
-    return this.http.get<Category[]>(`${this.adminUrl}/categories`);
+    return this.http.get<Category[]>(`${this.getBaseUrl()}/categories`);
   }
 
   createCategory(name: string, description?: string): Observable<Category> {

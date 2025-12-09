@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -10,7 +10,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ProductService } from '../../../core/services/product.service';
-import { Product, Category, ProductCreateRequest, ProductUpdateRequest } from '../../../core/models';
+import { AuthService } from '../../../core/services/auth.service';
+import { Product, Category, ProductCreateRequest, ProductUpdateRequest, User } from '../../../core/models';
 
 @Component({
   selector: 'app-product-form',
@@ -22,21 +23,30 @@ import { Product, Category, ProductCreateRequest, ProductUpdateRequest } from '.
 export class ProductFormComponent implements OnInit {
   productForm!: FormGroup;
   categories: Category[] = [];
+  vendors: User[] = [];
   isLoading = false;
   isEditMode = false;
   productId: number | null = null;
+  currentUser: User | null = null;
 
-  constructor(
-    private fb: FormBuilder,
-    private productService: ProductService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+  private fb = inject(FormBuilder);
+  private productService = inject(ProductService);
+  private authService = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+
+  get isAdmin(): boolean {
+    return this.currentUser?.role === 'ADMIN';
+  }
 
   ngOnInit(): void {
+    this.currentUser = this.authService.getCurrentUser();
     this.initForm();
     this.loadCategories();
-    
+    if (this.isAdmin) {
+      this.loadVendors();
+    }
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;
@@ -51,19 +61,65 @@ export class ProductFormComponent implements OnInit {
       sku: ['', [Validators.required]],
       description: [''],
       categoryId: [null, [Validators.required]],
-      quantity: [0, [Validators.required, Validators.min(0)]],
-      minQuantity: [0, [Validators.required, Validators.min(0)]],
-      maxQuantity: [100, [Validators.required, Validators.min(1)]],
-      reorderPoint: [10, [Validators.required, Validators.min(0)]],
+      vendorId: [null, this.isAdmin ? [Validators.required] : []],
+      currentStock: [0, [Validators.required, Validators.min(0)]],
+      reorderLevel: [10, [Validators.required, Validators.min(0)]],
+      reorderQuantity: [50, [Validators.required, Validators.min(1)]],
       unitPrice: [0, [Validators.required, Validators.min(0)]],
-      costPrice: [0, [Validators.required, Validators.min(0)]],
-      location: ['']
+      costPrice: [0, [Validators.min(0)]],
+      unit: ['pieces'],
+      imageUrl: ['']
     });
+
+    // Disable SKU and vendorId in edit mode
+    if (this.isEditMode) {
+      this.productForm.get('sku')?.disable();
+      this.productForm.get('vendorId')?.disable();
+    }
   }
 
   loadCategories(): void {
     this.productService.getCategories().subscribe({
-      next: (categories: Category[]) => this.categories = categories
+      next: (categories: Category[]) => {
+        this.categories = categories;
+        console.log('📦 Categories loaded:', categories);
+      },
+      error: (err) => {
+        console.error('❌ Error loading categories:', err);
+      }
+    });
+  }
+
+  createNewCategory(): void {
+    const categoryName = prompt('Enter category name:');
+    if (!categoryName || categoryName.trim() === '') {
+      return;
+    }
+
+    const description = prompt('Enter category description (optional):', '');
+
+    console.log('📝 Creating new category:', categoryName);
+
+    this.productService.createCategory(categoryName, description || undefined).subscribe({
+      next: (newCategory: Category) => {
+        console.log('✅ Category created successfully:', newCategory);
+        this.categories.push(newCategory);
+        this.productForm.get('categoryId')?.setValue(newCategory.id);
+        alert('Category created successfully!');
+      },
+      error: (err) => {
+        console.error('❌ Error creating category:', err);
+        const errorMsg = err?.error?.message || err?.message || 'Unknown error';
+        alert('Error creating category: ' + errorMsg);
+      }
+    });
+  }
+
+  loadVendors(): void {
+    this.authService.getUsers().subscribe({
+      next: (users: User[]) => {
+        this.vendors = users.filter(u => u.role === 'VENDOR' || u.role === 'ADMIN');
+      }
     });
   }
 
@@ -72,7 +128,20 @@ export class ProductFormComponent implements OnInit {
       this.isLoading = true;
       this.productService.getProduct(this.productId).subscribe({
         next: (product: Product) => {
-          this.productForm.patchValue(product);
+          this.productForm.patchValue({
+            name: product.name,
+            sku: product.sku,
+            description: product.description,
+            categoryId: product.categoryId,
+            vendorId: product.vendorId,
+            currentStock: product.currentStock,
+            reorderLevel: product.reorderLevel,
+            reorderQuantity: product.reorderQuantity,
+            unitPrice: product.unitPrice,
+            costPrice: product.costPrice,
+            unit: product.unit,
+            imageUrl: product.imageUrl
+          });
           this.isLoading = false;
         },
         error: () => this.isLoading = false
@@ -83,21 +152,84 @@ export class ProductFormComponent implements OnInit {
   onSubmit(): void {
     if (this.productForm.valid) {
       this.isLoading = true;
-      const productData = this.productForm.value;
+      const formValue = this.productForm.getRawValue();
 
       if (this.isEditMode && this.productId) {
-        const updateRequest: ProductUpdateRequest = { ...productData, id: this.productId };
+        const updateRequest: ProductUpdateRequest = {
+          name: formValue.name,
+          description: formValue.description,
+          categoryId: formValue.categoryId,
+          reorderLevel: formValue.reorderLevel,
+          reorderQuantity: formValue.reorderQuantity,
+          unitPrice: formValue.unitPrice,
+          costPrice: formValue.costPrice,
+          unit: formValue.unit,
+          imageUrl: formValue.imageUrl
+        };
         this.productService.updateProduct(this.productId, updateRequest).subscribe({
-          next: () => { this.isLoading = false; this.router.navigate(['/inventory']); },
-          error: () => this.isLoading = false
+          next: () => {
+            console.log('✅ Product updated successfully');
+            this.isLoading = false;
+            this.router.navigate(['/inventory']).then(() => {
+              console.log('✅ Navigated to inventory, refreshing...');
+              setTimeout(() => window.location.reload(), 500);
+            });
+          },
+          error: (err) => {
+            console.error('❌ Error updating product:', err);
+            this.isLoading = false;
+            alert('Error updating product: ' + (err?.error?.message || err?.message || 'Unknown error'));
+          }
         });
       } else {
-        const createRequest: ProductCreateRequest = productData;
+        // For non-admin, use their own ID as vendorId
+        const vendorId = this.isAdmin ? formValue.vendorId : this.currentUser?.id;
+
+        if (!vendorId) {
+          console.error('❌ Vendor ID is required for product creation');
+          this.isLoading = false;
+          alert('Error: Vendor ID not found. Please try again.');
+          return;
+        }
+
+        const createRequest: ProductCreateRequest = {
+          name: formValue.name,
+          sku: formValue.sku,
+          description: formValue.description,
+          categoryId: formValue.categoryId,
+          vendorId: vendorId,
+          currentStock: formValue.currentStock,
+          reorderLevel: formValue.reorderLevel,
+          reorderQuantity: formValue.reorderQuantity,
+          unitPrice: formValue.unitPrice,
+          costPrice: formValue.costPrice,
+          unit: formValue.unit,
+          imageUrl: formValue.imageUrl
+        };
+
+        console.log('📤 Creating product with request:', createRequest);
+
         this.productService.createProduct(createRequest).subscribe({
-          next: () => { this.isLoading = false; this.router.navigate(['/inventory']); },
-          error: () => this.isLoading = false
+          next: (product) => {
+            console.log('✅ Product created successfully:', product);
+            this.isLoading = false;
+            alert('Product created successfully!');
+            this.router.navigate(['/inventory']).then(() => {
+              console.log('✅ Navigated to inventory, refreshing...');
+              setTimeout(() => window.location.reload(), 500);
+            });
+          },
+          error: (err) => {
+            console.error('❌ Error creating product:', err);
+            this.isLoading = false;
+            const errorMsg = err?.error?.message || err?.message || 'Unknown error';
+            alert('Error creating product: ' + errorMsg);
+          }
         });
       }
+    } else {
+      console.warn('⚠️ Form is invalid');
+      alert('Please fill in all required fields');
     }
   }
 

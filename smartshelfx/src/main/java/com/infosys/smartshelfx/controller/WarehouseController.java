@@ -2,6 +2,7 @@ package com.infosys.smartshelfx.controller;
 
 import com.infosys.smartshelfx.dtos.*;
 import com.infosys.smartshelfx.entity.ReorderStatus;
+import com.infosys.smartshelfx.entity.Role;
 import com.infosys.smartshelfx.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +29,7 @@ import java.util.List;
  * Restrictions:
  * - Cannot delete products
  * - Cannot change SKU or vendor assignment
+ * - Warehouse Managers can only see their own products
  */
 @RestController
 @RequestMapping("/api/warehouse")
@@ -39,13 +42,26 @@ public class WarehouseController {
     private final InventoryService inventoryService;
     private final CsvService csvService;
 
+    private Long getCurrentUserId(Authentication authentication) {
+        if (authentication.getPrincipal() instanceof UserDetailsImpl) {
+            return ((UserDetailsImpl) authentication.getPrincipal()).getId();
+        }
+        return null;
+    }
+
+    private boolean isAdmin(Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+    }
+
     // ==================== PRODUCT VIEWING ====================
 
     /**
-     * Get all products with filters
+     * Get all products with filters - filtered by createdBy for Warehouse Managers
      */
     @GetMapping("/products")
     public ResponseEntity<Page<ProductDTO>> getAllProducts(
+            Authentication authentication,
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) Long vendorId,
             @RequestParam(required = false) String stockStatus,
@@ -67,7 +83,13 @@ public class WarehouseController {
                 .sortDirection(sortDirection)
                 .build();
 
-        return ResponseEntity.ok(productService.getAllProducts(filter));
+        // Admin sees all, Warehouse Manager sees only their own products
+        if (isAdmin(authentication)) {
+            return ResponseEntity.ok(productService.getAllProducts(filter));
+        } else {
+            Long userId = getCurrentUserId(authentication);
+            return ResponseEntity.ok(productService.getProductsByCreatedBy(userId, filter));
+        }
     }
 
     /**
@@ -106,19 +128,39 @@ public class WarehouseController {
     }
 
     /**
-     * Get low stock products
+     * Create product (for Warehouse Managers)
      */
-    @GetMapping("/products/low-stock")
-    public ResponseEntity<List<ProductDTO>> getLowStockProducts() {
-        return ResponseEntity.ok(productService.getLowStockProducts());
+    @PostMapping("/products")
+    public ResponseEntity<ProductDTO> createProduct(
+            Authentication authentication,
+            @Valid @RequestBody ProductCreateRequest request) {
+        return ResponseEntity.ok(productService.createProduct(request));
     }
 
     /**
-     * Get out of stock products
+     * Get low stock products - filtered by createdBy for Warehouse Managers
+     */
+    @GetMapping("/products/low-stock")
+    public ResponseEntity<List<ProductDTO>> getLowStockProducts(Authentication authentication) {
+        if (isAdmin(authentication)) {
+            return ResponseEntity.ok(productService.getLowStockProducts());
+        } else {
+            Long userId = getCurrentUserId(authentication);
+            return ResponseEntity.ok(productService.getLowStockProductsByCreatedBy(userId));
+        }
+    }
+
+    /**
+     * Get out of stock products - filtered by createdBy for Warehouse Managers
      */
     @GetMapping("/products/out-of-stock")
-    public ResponseEntity<List<ProductDTO>> getOutOfStockProducts() {
-        return ResponseEntity.ok(productService.getOutOfStockProducts());
+    public ResponseEntity<List<ProductDTO>> getOutOfStockProducts(Authentication authentication) {
+        if (isAdmin(authentication)) {
+            return ResponseEntity.ok(productService.getOutOfStockProducts());
+        } else {
+            Long userId = getCurrentUserId(authentication);
+            return ResponseEntity.ok(productService.getOutOfStockProductsByCreatedBy(userId));
+        }
     }
 
     // ==================== STOCK MANAGEMENT ====================

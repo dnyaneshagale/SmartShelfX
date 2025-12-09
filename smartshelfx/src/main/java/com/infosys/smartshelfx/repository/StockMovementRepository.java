@@ -15,32 +15,47 @@ import java.util.List;
 @Repository
 public interface StockMovementRepository extends JpaRepository<StockMovement, Long> {
 
-    List<StockMovement> findByProductId(Long productId);
+        List<StockMovement> findByProductId(Long productId);
 
-    Page<StockMovement> findByProductId(Long productId, Pageable pageable);
+        Page<StockMovement> findByProductId(Long productId, Pageable pageable);
 
-    List<StockMovement> findByProductIdOrderByCreatedAtDesc(Long productId);
+        List<StockMovement> findByProductIdOrderByCreatedAtDesc(Long productId);
 
-    List<StockMovement> findByPerformedById(Long userId);
+        List<StockMovement> findByPerformedById(Long userId);
 
-    Page<StockMovement> findByPerformedById(Long userId, Pageable pageable);
+        Page<StockMovement> findByPerformedById(Long userId, Pageable pageable);
 
-    List<StockMovement> findByMovementType(MovementType movementType);
+        /**
+         * Find movements by product ID and performed by user ID (for Warehouse
+         * Managers)
+         */
+        Page<StockMovement> findByProductIdAndPerformedById(Long productId, Long userId, Pageable pageable);
 
-    @Query("SELECT sm FROM StockMovement sm WHERE sm.createdAt BETWEEN :startDate AND :endDate")
-    List<StockMovement> findByDateRange(
-            @Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate);
+        List<StockMovement> findByMovementType(MovementType movementType);
 
-    @Query("SELECT sm FROM StockMovement sm WHERE sm.product.vendor.id = :vendorId ORDER BY sm.createdAt DESC")
-    Page<StockMovement> findByVendorId(@Param("vendorId") Long vendorId, Pageable pageable);
+        @Query("SELECT sm FROM StockMovement sm WHERE sm.createdAt BETWEEN :startDate AND :endDate")
+        List<StockMovement> findByDateRange(
+                        @Param("startDate") LocalDateTime startDate,
+                        @Param("endDate") LocalDateTime endDate);
 
-    @Query("SELECT SUM(sm.quantity) FROM StockMovement sm WHERE sm.product.id = :productId AND sm.movementType IN :inTypes")
-    Integer getTotalInbound(@Param("productId") Long productId, @Param("inTypes") List<MovementType> inTypes);
+        /**
+         * Find movements by user ID and date range (for Warehouse Managers)
+         */
+        @Query("SELECT sm FROM StockMovement sm WHERE sm.performedBy.id = :userId AND sm.createdAt BETWEEN :startDate AND :endDate ORDER BY sm.createdAt DESC")
+        List<StockMovement> findByPerformedByIdAndDateRange(
+                        @Param("userId") Long userId,
+                        @Param("startDate") LocalDateTime startDate,
+                        @Param("endDate") LocalDateTime endDate);
 
-    @Query("SELECT SUM(sm.quantity) FROM StockMovement sm WHERE sm.product.id = :productId AND sm.movementType IN :outTypes")
-    Integer getTotalOutbound(@Param("productId") Long productId, @Param("outTypes") List<MovementType> outTypes);
+        @Query("SELECT sm FROM StockMovement sm WHERE sm.product.vendor.id = :vendorId ORDER BY sm.createdAt DESC")
+        Page<StockMovement> findByVendorId(@Param("vendorId") Long vendorId, Pageable pageable);
 
-    List<StockMovement> findByProductIdAndCreatedAtBetween(Long productId, LocalDateTime startDate,
-            LocalDateTime endDate);
+        @Query("SELECT SUM(sm.quantity) FROM StockMovement sm WHERE sm.product.id = :productId AND sm.movementType IN :inTypes")
+        Integer getTotalInbound(@Param("productId") Long productId, @Param("inTypes") List<MovementType> inTypes);
+
+        @Query("SELECT SUM(sm.quantity) FROM StockMovement sm WHERE sm.product.id = :productId AND sm.movementType IN :outTypes")
+        Integer getTotalOutbound(@Param("productId") Long productId, @Param("outTypes") List<MovementType> outTypes);
+
+        List<StockMovement> findByProductIdAndCreatedAtBetween(Long productId, LocalDateTime startDate,
+                        LocalDateTime endDate);
 }

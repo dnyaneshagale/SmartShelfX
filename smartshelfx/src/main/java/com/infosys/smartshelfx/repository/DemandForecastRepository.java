@@ -15,35 +15,38 @@ import java.util.Optional;
 @Repository
 public interface DemandForecastRepository extends JpaRepository<DemandForecast, Long> {
 
-    List<DemandForecast> findByProductIdOrderByForecastDateDesc(Long productId);
+        List<DemandForecast> findByProductIdOrderByForecastDateDesc(Long productId);
 
-    Page<DemandForecast> findByProductId(Long productId, Pageable pageable);
+        Page<DemandForecast> findByProductId(Long productId, Pageable pageable);
 
-    @Query("SELECT df FROM DemandForecast df WHERE df.product.id = :productId " +
-            "AND df.forecastDate BETWEEN :startDate AND :endDate ORDER BY df.forecastDate ASC")
-    List<DemandForecast> findByProductIdAndDateRange(
-            @Param("productId") Long productId,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate);
+        @Query("SELECT df FROM DemandForecast df WHERE df.product.id = :productId " +
+                        "AND df.forecastDate BETWEEN :startDate AND :endDate ORDER BY df.forecastDate ASC")
+        List<DemandForecast> findByProductIdAndDateRange(
+                        @Param("productId") Long productId,
+                        @Param("startDate") LocalDate startDate,
+                        @Param("endDate") LocalDate endDate);
 
-    @Query("SELECT df FROM DemandForecast df WHERE df.isAtRisk = true ORDER BY df.daysUntilStockout ASC")
-    List<DemandForecast> findProductsAtRisk();
+        @Query("SELECT df FROM DemandForecast df WHERE df.isAtRisk = true ORDER BY df.daysUntilStockout ASC")
+        List<DemandForecast> findProductsAtRisk();
 
-    @Query("SELECT df FROM DemandForecast df WHERE df.isAtRisk = true AND df.product.vendor.id = :vendorId")
-    List<DemandForecast> findProductsAtRiskByVendor(@Param("vendorId") Long vendorId);
+        @Query("SELECT df FROM DemandForecast df WHERE df.isAtRisk = true AND df.product.vendor.id = :vendorId")
+        List<DemandForecast> findProductsAtRiskByVendor(@Param("vendorId") Long vendorId);
 
-    @Query("SELECT df FROM DemandForecast df WHERE df.forecastDate = :date AND df.forecastPeriod = :period")
-    List<DemandForecast> findByDateAndPeriod(@Param("date") LocalDate date, @Param("period") String period);
+        @Query("SELECT df FROM DemandForecast df WHERE df.isAtRisk = true AND df.product.createdBy = :createdBy ORDER BY df.daysUntilStockout ASC")
+        List<DemandForecast> findProductsAtRiskByCreatedBy(@Param("createdBy") Long createdBy);
 
-    Optional<DemandForecast> findTopByProductIdOrderByCreatedAtDesc(Long productId);
+        @Query("SELECT df FROM DemandForecast df WHERE df.forecastDate = :date AND df.forecastPeriod = :period")
+        List<DemandForecast> findByDateAndPeriod(@Param("date") LocalDate date, @Param("period") String period);
 
-    @Query("SELECT df FROM DemandForecast df WHERE df.product.id = :productId " +
-            "AND df.forecastPeriod = :period ORDER BY df.forecastDate DESC")
-    List<DemandForecast> findLatestByProductAndPeriod(
-            @Param("productId") Long productId,
-            @Param("period") String period,
-            Pageable pageable);
+        Optional<DemandForecast> findTopByProductIdOrderByCreatedAtDesc(Long productId);
 
-    @Query("SELECT DISTINCT df.product.id FROM DemandForecast df WHERE df.isAtRisk = true")
-    List<Long> findAtRiskProductIds();
+        @Query("SELECT df FROM DemandForecast df WHERE df.product.id = :productId " +
+                        "AND df.forecastPeriod = :period ORDER BY df.forecastDate DESC")
+        List<DemandForecast> findLatestByProductAndPeriod(
+                        @Param("productId") Long productId,
+                        @Param("period") String period,
+                        Pageable pageable);
+
+        @Query("SELECT DISTINCT df.product.id FROM DemandForecast df WHERE df.isAtRisk = true")
+        List<Long> findAtRiskProductIds();
 }

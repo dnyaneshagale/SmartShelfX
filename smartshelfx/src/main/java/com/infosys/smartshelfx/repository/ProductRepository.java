@@ -75,6 +75,25 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
                         @Param("searchTerm") String searchTerm,
                         Pageable pageable);
 
+        @Query("SELECT p FROM Product p WHERE p.createdBy = :createdBy AND " +
+                        "(:categoryId IS NULL OR p.category.id = :categoryId) AND " +
+                        "(:vendorId IS NULL OR p.vendor.id = :vendorId) AND " +
+                        "(:stockStatus IS NULL OR p.stockStatus = :stockStatus) AND " +
+                        "(:searchTerm IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(p.sku) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
+        Page<Product> findByCreatedByWithFilters(
+                        @Param("createdBy") Long createdBy,
+                        @Param("categoryId") Long categoryId,
+                        @Param("vendorId") Long vendorId,
+                        @Param("stockStatus") StockStatus stockStatus,
+                        @Param("searchTerm") String searchTerm,
+                        Pageable pageable);
+
+        @Query("SELECT p FROM Product p WHERE p.createdBy = :createdBy AND p.currentStock <= p.reorderLevel")
+        List<Product> findLowStockProductsByCreatedBy(@Param("createdBy") Long createdBy);
+
+        @Query("SELECT p FROM Product p WHERE p.createdBy = :createdBy AND p.stockStatus = 'OUT_OF_STOCK'")
+        List<Product> findOutOfStockProductsByCreatedBy(@Param("createdBy") Long createdBy);
+
         // Additional methods for scheduling and analytics
         List<Product> findByCurrentStockLessThanEqual(int currentStock);
 

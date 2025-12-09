@@ -32,12 +32,12 @@ public class JwtUtils {
     }
 
     public String generateToken(UserDetailsImpl userDetails) {
-        String username = userDetails.getUsername();
+        String email = userDetails.getEmail();
         String roles = userDetails.getAuthorities().stream()
                 .map(authority -> authority.getAuthority())
                 .collect(Collectors.joining(","));
         return Jwts.builder()
-                .subject(username)
+                .subject(email)
                 .claim("roles", roles)
                 .issuedAt(new Date())
                 .expiration(new Date((new Date().getTime() + jwtExpirationMs)))

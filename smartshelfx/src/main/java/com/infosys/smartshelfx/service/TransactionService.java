@@ -213,11 +213,41 @@ public class TransactionService {
     }
 
     /**
+     * Get stock movements filtered by performedBy user (for Warehouse Managers)
+     */
+    public Page<StockMovementDTO> getStockMovementsByPerformedBy(
+            Long userId, MovementType type, Long productId,
+            LocalDateTime startDate, LocalDateTime endDate,
+            int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        Page<StockMovement> movements;
+        if (productId != null) {
+            movements = stockMovementRepository.findByProductIdAndPerformedById(productId, userId, pageable);
+        } else {
+            movements = stockMovementRepository.findByPerformedById(userId, pageable);
+        }
+
+        return movements.map(this::toMovementDTO);
+    }
+
+    /**
      * Get stock movements by date range
      */
     public List<StockMovementDTO> getStockMovementsByDateRange(
             LocalDateTime startDate, LocalDateTime endDate) {
         return stockMovementRepository.findByDateRange(startDate, endDate)
+                .stream()
+                .map(this::toMovementDTO)
+                .toList();
+    }
+
+    /**
+     * Get stock movements by date range and user (for Warehouse Managers)
+     */
+    public List<StockMovementDTO> getStockMovementsByDateRangeAndUser(
+            Long userId, LocalDateTime startDate, LocalDateTime endDate) {
+        return stockMovementRepository.findByPerformedByIdAndDateRange(userId, startDate, endDate)
                 .stream()
                 .map(this::toMovementDTO)
                 .toList();
@@ -279,8 +309,8 @@ public class TransactionService {
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
-            String username = authentication.getName();
-            return userRepository.findByUsername(username).orElse(null);
+            String email = authentication.getName();
+            return userRepository.findByEmail(email).orElse(null);
         }
         return null;
     }

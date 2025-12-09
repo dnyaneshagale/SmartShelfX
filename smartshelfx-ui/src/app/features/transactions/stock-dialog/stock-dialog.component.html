@@ -13,7 +13,7 @@
             <mat-label>Product</mat-label>
             <mat-select formControlName="productId">
                 <mat-option *ngFor="let product of products" [value]="product.id">
-                    {{product.name}} (SKU: {{product.sku}}) - Current: {{product.quantity}}
+                    {{product.name}} (SKU: {{product.sku}}) - Current: {{product.currentStock}}
                 </mat-option>
             </mat-select>
             <mat-error *ngIf="stockForm.get('productId')?.hasError('required')">Product is required</mat-error>

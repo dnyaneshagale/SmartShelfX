@@ -2,6 +2,7 @@ package com.infosys.smartshelfx.controller;
 
 import com.infosys.smartshelfx.dtos.*;
 import com.infosys.smartshelfx.service.ForecastingService;
+import com.infosys.smartshelfx.service.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,18 @@ import java.util.List;
 public class ForecastController {
 
     private final ForecastingService forecastingService;
+
+    private Long getCurrentUserId(Authentication authentication) {
+        if (authentication.getPrincipal() instanceof UserDetailsImpl) {
+            return ((UserDetailsImpl) authentication.getPrincipal()).getId();
+        }
+        return null;
+    }
+
+    private boolean isAdmin(Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+    }
 
     // ==================== FORECAST GENERATION ====================
 
@@ -49,12 +62,18 @@ public class ForecastController {
     // ==================== AT-RISK PRODUCTS ====================
 
     /**
-     * Get products at risk of stockout (all)
+     * Get products at risk of stockout - filtered by createdBy for Warehouse
+     * Managers
      */
     @GetMapping("/at-risk")
     @PreAuthorize("hasAnyRole('ADMIN', 'WAREHOUSEMANAGER')")
-    public ResponseEntity<List<DemandForecastDTO>> getProductsAtRisk() {
-        return ResponseEntity.ok(forecastingService.getProductsAtRisk());
+    public ResponseEntity<List<DemandForecastDTO>> getProductsAtRisk(Authentication authentication) {
+        if (isAdmin(authentication)) {
+            return ResponseEntity.ok(forecastingService.getProductsAtRisk());
+        } else {
+            Long userId = getCurrentUserId(authentication);
+            return ResponseEntity.ok(forecastingService.getProductsAtRiskByCreatedBy(userId));
+        }
     }
 
     /**
@@ -63,8 +82,7 @@ public class ForecastController {
     @GetMapping("/vendor/at-risk")
     @PreAuthorize("hasAnyRole('ADMIN', 'VENDOR')")
     public ResponseEntity<List<DemandForecastDTO>> getVendorProductsAtRisk(Authentication authentication) {
-        // Get vendor ID from authentication
-        Long vendorId = getVendorIdFromAuth(authentication);
+        Long vendorId = getCurrentUserId(authentication);
         return ResponseEntity.ok(forecastingService.getProductsAtRiskByVendor(vendorId));
     }
 
@@ -93,14 +111,5 @@ public class ForecastController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(forecast);
-    }
-
-    private Long getVendorIdFromAuth(Authentication authentication) {
-        // Implementation depends on your UserDetails implementation
-        // This is a placeholder - adjust based on your UserDetailsImpl
-        if (authentication.getPrincipal() instanceof com.infosys.smartshelfx.service.UserDetailsImpl) {
-            return ((com.infosys.smartshelfx.service.UserDetailsImpl) authentication.getPrincipal()).getId();
-        }
-        return null;
     }
 }
