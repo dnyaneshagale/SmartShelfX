@@ -46,6 +46,27 @@ export class ProductListComponent implements OnInit {
     return user?.role === 'ADMIN';
   }
 
+  get isVendor(): boolean {
+    const user = this.authService.getCurrentUser();
+    return user?.role === 'VENDOR';
+  }
+
+  get isWarehouseManager(): boolean {
+    const user = this.authService.getCurrentUser();
+    return user?.role === 'WAREHOUSEMANAGER';
+  }
+
+  get canDeleteProducts(): boolean {
+    // Only Admin can delete products
+    return this.isAdmin;
+  }
+
+  get canCreateProducts(): boolean {
+    // Admin and Warehouse Manager can create products
+    // Vendors cannot create products (only view and edit their own)
+    return this.isAdmin || this.isWarehouseManager;
+  }
+
   ngOnInit(): void {
     this.loadProducts();
     this.loadCategories();

@@ -39,15 +39,31 @@ export class ProductFormComponent implements OnInit {
     return this.currentUser?.role === 'ADMIN';
   }
 
+  get isVendor(): boolean {
+    return this.currentUser?.role === 'VENDOR';
+  }
+
+  get isWarehouseManager(): boolean {
+    return this.currentUser?.role === 'WAREHOUSEMANAGER';
+  }
+
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
+    
+    // Check if vendor is trying to create a new product (not allowed)
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id && this.isVendor) {
+      alert('Vendors cannot create new products. You can only edit your existing products.');
+      this.router.navigate(['/inventory']);
+      return;
+    }
+
     this.initForm();
     this.loadCategories();
     if (this.isAdmin) {
       this.loadVendors();
     }
 
-    const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;
       this.productId = +id;
@@ -71,9 +87,25 @@ export class ProductFormComponent implements OnInit {
       imageUrl: ['']
     });
 
-    // Disable SKU and vendorId in edit mode
+    // Role-based field restrictions
     if (this.isEditMode) {
+      // Always disable SKU in edit mode (all roles)
       this.productForm.get('sku')?.disable();
+      
+      // Vendors cannot edit SKU or category in edit mode (only description, images, pricing)
+      if (this.isVendor) {
+        this.productForm.get('categoryId')?.disable();
+        this.productForm.get('currentStock')?.disable();
+        this.productForm.get('reorderLevel')?.disable();
+        this.productForm.get('reorderQuantity')?.disable();
+      }
+      
+      // Warehouse managers cannot edit SKU or vendorId in edit mode
+      if (this.isWarehouseManager) {
+        this.productForm.get('vendorId')?.disable();
+      }
+      
+      // Always disable vendorId in edit mode
       this.productForm.get('vendorId')?.disable();
     }
   }

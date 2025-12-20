@@ -4,15 +4,18 @@ Flask API for demand forecasting with statistical predictions
 """
 
 from flask import Flask, request, jsonify
+from flask.cli import load_dotenv
 from flask_cors import CORS
 import json
 from datetime import datetime, timedelta
 import statistics
 import logging
 import os
+import numpy as np
+
 
 # Load environment variables
-# load_dotenv()
+load_dotenv()
 
 # Initialize Flask app
 app = Flask(__name__)

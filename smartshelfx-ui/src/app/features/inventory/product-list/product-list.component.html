@@ -50,7 +50,8 @@
     <mat-card-header>
       <mat-card-title>Products</mat-card-title>
       <div class="header-actions">
-        <button mat-raised-button color="primary" routerLink="/inventory/add">
+        <!-- Only Admin and Warehouse Manager can create products -->
+        <button mat-raised-button color="primary" routerLink="/inventory/add" *ngIf="canCreateProducts">
           <mat-icon>add</mat-icon>
           Add Product
         </button>
@@ -105,7 +106,8 @@
                 <mat-icon>edit</mat-icon>
                 <span>Edit</span>
               </button>
-              <button mat-menu-item (click)="deleteProduct(product)" *ngIf="isAdmin">
+              <!-- Only Admin can delete products -->
+              <button mat-menu-item (click)="deleteProduct(product)" *ngIf="canDeleteProducts">
                 <mat-icon>delete</mat-icon>
                 <span>Delete</span>
               </button>

@@ -117,6 +117,16 @@ public class WarehouseController {
     }
 
     /**
+     * Create category (warehouse managers can create categories)
+     */
+    @PostMapping("/categories")
+    public ResponseEntity<CategoryDTO> createCategory(
+            @RequestParam String name,
+            @RequestParam(required = false) String description) {
+        return ResponseEntity.ok(categoryService.createCategory(name, description));
+    }
+
+    /**
      * Update product (limited fields - cannot change SKU or vendor)
      */
     @PutMapping("/products/{id}")

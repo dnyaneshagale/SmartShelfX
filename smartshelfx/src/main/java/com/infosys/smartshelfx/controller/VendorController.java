@@ -114,6 +114,16 @@ public class VendorController {
     }
 
     /**
+     * Create category (vendors can create categories for their products)
+     */
+    @PostMapping("/categories")
+    public ResponseEntity<CategoryDTO> createCategory(
+            @RequestParam String name,
+            @RequestParam(required = false) String description) {
+        return ResponseEntity.ok(categoryService.createCategory(name, description));
+    }
+
+    /**
      * Get low stock products for this vendor
      */
     @GetMapping("/products/low-stock")

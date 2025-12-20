@@ -9,6 +9,7 @@ import { AuthService } from './auth.service';
 export class ProductService {
   private adminUrl = `${environment.apiUrl}/admin`;
   private warehouseUrl = `${environment.apiUrl}/warehouse`;
+  private vendorUrl = `${environment.apiUrl}/vendor`;
   private dashboardUrl = `${environment.apiUrl}/dashboard`;
 
   private http = inject(HttpClient);
@@ -16,12 +17,19 @@ export class ProductService {
 
   private getBaseUrl(): string {
     const user = this.authService.getCurrentUser();
-    return user?.role === 'ADMIN' ? this.adminUrl : this.warehouseUrl;
+    if (user?.role === 'ADMIN') return this.adminUrl;
+    if (user?.role === 'VENDOR') return this.vendorUrl;
+    return this.warehouseUrl;
   }
 
   private isAdmin(): boolean {
     const user = this.authService.getCurrentUser();
     return user?.role === 'ADMIN';
+  }
+
+  private isVendor(): boolean {
+    const user = this.authService.getCurrentUser();
+    return user?.role === 'VENDOR';
   }
 
   getAllProducts(page = 0, size = 20, filter?: ProductFilter): Observable<Page<Product>> {
