@@ -83,7 +83,7 @@ import { AuthService } from '../../services/auth.service';
             <mat-icon>inventory</mat-icon>
             My Products
           </a>
-          <a mat-button routerLink="/vendor/orders" routerLinkActive="active">
+          <a mat-button routerLink="/vendor/purchase-orders" routerLinkActive="active">
             <mat-icon>receipt</mat-icon>
             Purchase Orders
           </a>
@@ -98,9 +98,9 @@ import { AuthService } from '../../services/auth.service';
 
       <div class="user-info">
         <span class="role-badge">{{userRole}}</span>
-        <button mat-button [matMenuTriggerFor]="menu">
+        <button mat-button [matMenuTriggerFor]="menu" class="user-button">
           <mat-icon>account_circle</mat-icon>
-          {{currentUser}}
+          <span class="user-name">{{currentUser}}</span>
         </button>
       </div>
       
@@ -124,6 +124,7 @@ import { AuthService } from '../../services/auth.service';
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
 
+    .toolbar-manager,
     .toolbar-warehouse_manager {
       background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
     }
@@ -186,7 +187,26 @@ import { AuthService } from '../../services/auth.service';
       color: white;
     }
 
-    .user-info button {
+    .user-info .user-button {
+      color: white;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .user-info .user-button:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .user-info .user-button .user-name {
+      color: white;
+      font-weight: 500;
+      margin-left: 6px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .user-info .user-button mat-icon {
       color: white;
     }
 
@@ -198,6 +218,8 @@ import { AuthService } from '../../services/auth.service';
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
     @media (max-width: 960px) {
@@ -222,9 +244,10 @@ export class NavbarComponent {
     private authService: AuthService,
     private router: Router
   ) {
-    this.currentUser = localStorage.getItem('username') || 'User';
-    this.userRole = localStorage.getItem('role') || 'USER';
-    this.isWarehouseManager = this.userRole === 'WAREHOUSE_MANAGER';
+    const user = this.authService.getUser();
+    this.currentUser = user?.fullName || user?.username || 'User';
+    this.userRole = user?.role || 'USER';
+    this.isWarehouseManager = this.userRole === 'MANAGER' || this.userRole === 'WAREHOUSE_MANAGER';
     this.isVendor = this.userRole === 'VENDOR';
     this.isAdmin = this.userRole === 'ADMIN';
   }
@@ -233,8 +256,9 @@ export class NavbarComponent {
     switch (this.userRole) {
       case 'ADMIN':
         return 'Admin Portal';
+      case 'MANAGER':
       case 'WAREHOUSE_MANAGER':
-        return 'Warehouse Manager';
+        return 'Warehouse Manager Portal';
       case 'VENDOR':
         return 'Vendor Portal';
       default:

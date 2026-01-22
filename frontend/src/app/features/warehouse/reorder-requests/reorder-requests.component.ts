@@ -200,13 +200,15 @@ import { Product } from '../../../models/models';
       @if (getTotalRequests() === 0) {
         <mat-card class="empty-state">
           <mat-card-content>
-            <mat-icon>check_circle</mat-icon>
-            <h2>All Good!</h2>
-            <p>No reorder requests at this time. All products are adequately stocked.</p>
-            <button mat-raised-button color="primary" (click)="viewInventory()">
-              <mat-icon>inventory</mat-icon>
-              View Inventory
-            </button>
+            <div class="empty-state-content">
+              <mat-icon class="success-icon">check_circle</mat-icon>
+              <h2>All Good!</h2>
+              <p>No reorder requests at this time. All products are adequately stocked.</p>
+              <button mat-raised-button color="primary" (click)="viewInventory()">
+                <mat-icon>inventory</mat-icon>
+                View Inventory
+              </button>
+            </div>
           </mat-card-content>
         </mat-card>
       }
@@ -418,28 +420,40 @@ import { Product } from '../../../models/models';
     }
 
     .empty-state mat-card-content {
-      text-align: center;
-      padding: 64px 24px;
+      padding: 48px 24px;
     }
 
-    .empty-state mat-icon {
-      font-size: 96px;
-      width: 96px;
-      height: 96px;
+    .empty-state-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 16px;
+    }
+
+    .empty-state .success-icon {
+      font-size: 80px;
+      width: 80px;
+      height: 80px;
       color: #4caf50;
-      margin-bottom: 16px;
     }
 
     .empty-state h2 {
-      margin: 0 0 8px 0;
-      font-size: 32px;
+      margin: 0;
+      font-size: 28px;
       color: #4caf50;
+      font-weight: 600;
     }
 
     .empty-state p {
-      margin: 0 0 24px 0;
+      margin: 0;
       color: #666;
       font-size: 16px;
+      max-width: 400px;
+    }
+
+    .empty-state button {
+      margin-top: 8px;
     }
 
     @media (max-width: 768px) {

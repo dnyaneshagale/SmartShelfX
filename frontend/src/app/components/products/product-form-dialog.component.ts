@@ -42,17 +42,26 @@ import { Product, User } from '../../models/models';
 
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Category</mat-label>
-          <mat-select formControlName="category" required>
-            <mat-option value="Electronics">Electronics</mat-option>
-            <mat-option value="Accessories">Accessories</mat-option>
-            <mat-option value="Stationery">Stationery</mat-option>
-            <mat-option value="Furniture">Furniture</mat-option>
-            <mat-option value="Hardware">Hardware</mat-option>
+          <mat-select formControlName="category" required (selectionChange)="onCategoryChange($event)">
+            @for (cat of categories; track cat) {
+              <mat-option [value]="cat">{{cat}}</mat-option>
+            }
+            <mat-option value="_ADD_NEW_">➕ Add new category</mat-option>
           </mat-select>
           @if (productForm.get('category')?.hasError('required') && productForm.get('category')?.touched) {
             <mat-error>Category is required</mat-error>
           }
         </mat-form-field>
+
+        @if (showNewCategoryInput) {
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>New Category Name</mat-label>
+            <input matInput formControlName="newCategory" placeholder="Enter new category name">
+            @if (productForm.get('newCategory')?.hasError('required') && productForm.get('newCategory')?.touched) {
+              <mat-error>Category name is required</mat-error>
+            }
+          </mat-form-field>
+        }
 
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Price</mat-label>
@@ -112,6 +121,13 @@ import { Product, User } from '../../models/models';
       margin-bottom: 15px;
     }
 
+    .new-category-hint {
+      color: #666;
+      font-size: 12px;
+      margin-top: -10px;
+      margin-bottom: 15px;
+    }
+
     mat-dialog-actions {
       padding: 10px 20px;
     }
@@ -119,6 +135,8 @@ import { Product, User } from '../../models/models';
 })
 export class ProductFormDialogComponent {
   productForm: FormGroup;
+  categories: string[] = ['Electronics', 'Accessories', 'Stationery', 'Furniture', 'Hardware'];
+  showNewCategoryInput: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -129,11 +147,30 @@ export class ProductFormDialogComponent {
       sku: [data?.product?.sku || '', Validators.required],
       name: [data?.product?.name || '', Validators.required],
       category: [data?.product?.category || '', Validators.required],
+      newCategory: [''],
       price: [data?.product?.price || 0, [Validators.required, Validators.min(0)]],
       currentStock: [data?.product?.currentStock || 0, [Validators.required, Validators.min(0)]],
       reorderLevel: [data?.product?.reorderLevel || 0, [Validators.required, Validators.min(0)]],
       vendorId: [data?.product?.vendor?.id || null]
     });
+  }
+
+  onCategoryChange(event: any): void {
+    const selectedValue = event.value;
+    if (selectedValue === '_ADD_NEW_') {
+      this.showNewCategoryInput = true;
+      this.productForm.get('category')?.clearValidators();
+      this.productForm.get('category')?.updateValueAndValidity();
+      this.productForm.get('newCategory')?.setValidators([Validators.required]);
+      this.productForm.get('newCategory')?.updateValueAndValidity();
+    } else {
+      this.showNewCategoryInput = false;
+      this.productForm.get('category')?.setValidators([Validators.required]);
+      this.productForm.get('category')?.updateValueAndValidity();
+      this.productForm.get('newCategory')?.clearValidators();
+      this.productForm.get('newCategory')?.setValue('');
+      this.productForm.get('newCategory')?.updateValueAndValidity();
+    }
   }
 
   onCancel(): void {
@@ -142,7 +179,23 @@ export class ProductFormDialogComponent {
 
   onSave(): void {
     if (this.productForm.valid) {
-      this.dialogRef.close(this.productForm.value);
+      const formValue = { ...this.productForm.value };
+      
+      // If user added a new category, use that as the category
+      if (this.showNewCategoryInput && formValue.newCategory) {
+        formValue.category = formValue.newCategory.trim();
+        
+        // Add the new category to the list if not already present
+        if (!this.categories.includes(formValue.category)) {
+          this.categories.push(formValue.category);
+          this.categories.sort();
+        }
+      }
+      
+      // Remove the newCategory field before returning
+      delete formValue.newCategory;
+      
+      this.dialogRef.close(formValue);
     }
   }
 }

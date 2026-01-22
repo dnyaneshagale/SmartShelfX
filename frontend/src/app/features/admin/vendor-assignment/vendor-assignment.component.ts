@@ -116,6 +116,16 @@ import { Product, User } from '../../../models/models';
                 <mat-option value="unassigned">Unassigned Only</mat-option>
               </mat-select>
             </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Filter by Category</mat-label>
+              <mat-select [(ngModel)]="filterCategory" (selectionChange)="applyFilter()">
+                <mat-option value="all">All Categories</mat-option>
+                @for (category of categories; track category) {
+                  <mat-option [value]="category">{{category}}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
           </div>
 
           <div class="table-container">
@@ -295,11 +305,16 @@ import { Product, User } from '../../../models/models';
     }
 
     .filter-section {
+      display: flex;
+      gap: 16px;
       margin-bottom: 16px;
+      flex-wrap: wrap;
     }
 
     .filter-section mat-form-field {
       max-width: 300px;
+      flex: 1;
+      min-width: 200px;
     }
 
     .table-container {
@@ -428,7 +443,9 @@ export class VendorAssignmentComponent implements OnInit {
   products: any[] = [];
   filteredProducts: any[] = [];
   vendors: User[] = [];
+  categories: string[] = [];
   filterStatus: string = 'all';
+  filterCategory: string = 'all';
   bulkAssignMode: boolean = false;
   selectedBulkVendor?: number;
 
@@ -453,10 +470,17 @@ export class VendorAssignmentComponent implements OnInit {
           vendorName: p.vendor?.fullName || p.vendorName
         }));
         console.log('Loaded products with vendor mapping:', this.products);
+        this.extractCategories();
         this.applyFilter();
       },
       error: (error) => console.error('Error loading products:', error)
     });
+  }
+
+  extractCategories(): void {
+    // Get unique categories from products
+    const uniqueCategories = new Set(this.products.map(p => p.category).filter(c => c));
+    this.categories = Array.from(uniqueCategories).sort();
   }
 
   loadVendors(): void {
@@ -472,13 +496,21 @@ export class VendorAssignmentComponent implements OnInit {
   }
 
   applyFilter(): void {
+    let filtered = [...this.products];
+
+    // Apply status filter
     if (this.filterStatus === 'assigned') {
-      this.filteredProducts = this.products.filter(p => p.vendorId);
+      filtered = filtered.filter(p => p.vendorId);
     } else if (this.filterStatus === 'unassigned') {
-      this.filteredProducts = this.products.filter(p => !p.vendorId);
-    } else {
-      this.filteredProducts = [...this.products];
+      filtered = filtered.filter(p => !p.vendorId);
     }
+
+    // Apply category filter
+    if (this.filterCategory && this.filterCategory !== 'all') {
+      filtered = filtered.filter(p => p.category === this.filterCategory);
+    }
+
+    this.filteredProducts = filtered;
   }
 
   getAssignedProducts(): Product[] {
