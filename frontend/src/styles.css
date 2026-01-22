@@ -1,0 +1,55 @@
+/* Global Styles */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* Utility Classes */
+.text-center {
+  text-align: center;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+/* Form Styles */
+mat-form-field {
+  width: 100%;
+}
+
+/* Card Spacing */
+mat-card {
+  margin-bottom: 20px;
+}
+
+/* Table Styles */
+.mat-elevation-z8 {
+  box-shadow: 0 2px 4px rgba(0,0,0,.12);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .actions-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
