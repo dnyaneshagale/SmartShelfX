@@ -7,12 +7,14 @@ USE smartshelfx;
 -- ========================================
 -- SEED USERS
 -- Password for all users: "password123" (BCrypt encoded)
+-- JWT Secret: 3a4c18ff14cde780c200bb15e6c48684ad3725e189c60e0c5d3f88ff8a2a4d12
+-- Correct BCrypt Hash: $2a$10$7f9Kt3b1U1kzxdWwkFgwGOeKT2qGxLU56z64uM//gVIle0MCTlAkm
 -- ========================================
-INSERT INTO users (username, password, full_name, email, role) VALUES
-('admin', '$2a$10$XYvNxKnN3j0Kp8V2Q7Y0O.K0YyZhP0F3h0V3G3zGQY2L4Z0Y0Z0Z0', 'System Admin', 'admin@smartshelfx.com', 'ADMIN'),
-('manager1', '$2a$10$XYvNxKnN3j0Kp8V2Q7Y0O.K0YyZhP0F3h0V3G3zGQY2L4Z0Y0Z0Z0', 'John Manager', 'manager@smartshelfx.com', 'MANAGER'),
-('vendor1', '$2a$10$XYvNxKnN3j0Kp8V2Q7Y0O.K0YyZhP0F3h0V3G3zGQY2L4Z0Y0Z0Z0', 'ABC Supplies Ltd', 'vendor1@supplies.com', 'VENDOR'),
-('vendor2', '$2a$10$XYvNxKnN3j0Kp8V2Q7Y0O.K0YyZhP0F3h0V3G3zGQY2L4Z0Y0Z0Z0', 'XYZ Electronics', 'vendor2@electronics.com', 'VENDOR');
+INSERT INTO users (username, password, full_name, email, role, active) VALUES
+('admin', '$2a$10$7f9Kt3b1U1kzxdWwkFgwGOeKT2qGxLU56z64uM//gVIle0MCTlAkm', 'System Admin', 'admin@smartshelfx.com', 'ADMIN', true),
+('manager1', '$2a$10$7f9Kt3b1U1kzxdWwkFgwGOeKT2qGxLU56z64uM//gVIle0MCTlAkm', 'John Manager', 'manager@smartshelfx.com', 'MANAGER', true),
+('vendor1', '$2a$10$7f9Kt3b1U1kzxdWwkFgwGOeKT2qGxLU56z64uM//gVIle0MCTlAkm', 'ABC Supplies Ltd', 'vendor1@supplies.com', 'VENDOR', true),
+('vendor2', '$2a$10$7f9Kt3b1U1kzxdWwkFgwGOeKT2qGxLU56z64uM//gVIle0MCTlAkm', 'XYZ Electronics', 'vendor2@electronics.com', 'VENDOR', true);
 
 -- ========================================
 -- SEED PRODUCTS

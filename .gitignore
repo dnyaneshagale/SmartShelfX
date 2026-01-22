@@ -65,3 +65,6 @@ local.properties
 *.zip
 *.tar.gz
 *.rar
+
+dbsetup.txt
+backend/src/main/resources/application.properties

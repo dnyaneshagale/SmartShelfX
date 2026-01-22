@@ -24,13 +24,21 @@ public class AuthService {
     private PasswordEncoder passwordEncoder;
     
     public LoginResponse login(LoginRequest request) {
+        // Find user by email
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid credentials"));
         
+        // Verify password
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid credentials");
         }
         
+        // Check if user is active
+        if (!user.isActive()) {
+            throw new RuntimeException("Account is deactivated");
+        }
+        
+        // Generate JWT token
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
         
         return new LoginResponse(token, user.getId(), user.getUsername(), user.getRole().name(), user.getFullName());
