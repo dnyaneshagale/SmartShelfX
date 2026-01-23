@@ -168,8 +168,23 @@ export class SignupComponent {
       this.authService.signup(this.signupForm.value).subscribe({
         next: (response) => {
           this.loading = false;
-          this.snackBar.open('Account created successfully!', 'Close', { duration: 3000 });
-          this.router.navigate(['/dashboard']);
+          
+          // Show special message if it's a manager approval request
+          if (response.message) {
+            this.snackBar.open(response.message, 'Close', { duration: 5000 });
+          } else {
+            this.snackBar.open('Account created successfully!', 'Close', { duration: 3000 });
+          }
+          
+          // Navigate based on role
+          const role = response.role.toUpperCase();
+          if (role === 'ADMIN') {
+            this.router.navigate(['/admin/dashboard']);
+          } else if (role === 'MANAGER') {
+            this.router.navigate(['/warehouse/dashboard']);
+          } else if (role === 'VENDOR') {
+            this.router.navigate(['/vendor/dashboard']);
+          }
         },
         error: (error) => {
           this.loading = false;

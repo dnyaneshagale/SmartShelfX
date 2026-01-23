@@ -15,6 +15,7 @@ import { VendorDashboardComponent } from './features/vendor/vendor-dashboard/ven
 import { UserManagementComponent } from './features/admin/user-management/user-management.component';
 import { VendorAssignmentComponent } from './features/admin/vendor-assignment/vendor-assignment.component';
 import { ReportsComponent } from './features/admin/reports/reports.component';
+import { ApprovalRequestsComponent } from './components/approval-requests/approval-requests.component';
 
 // Warehouse feature components
 import { InventoryListComponent } from './features/warehouse/inventory-list/inventory-list.component';
@@ -48,6 +49,7 @@ export const routes: Routes = [
       { path: 'purchase-orders', component: PurchaseOrderListComponent },
       { path: 'forecast', component: ForecastViewComponent },
       { path: 'reports', component: ReportsComponent },
+      { path: 'approvals', component: ApprovalRequestsComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

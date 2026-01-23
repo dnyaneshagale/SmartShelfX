@@ -27,6 +27,7 @@ export interface LoginResponse {
   username: string;
   role: string;
   fullName: string;
+  message?: string;
 }
 
 export interface Product {

@@ -6,6 +6,7 @@ public class LoginResponse {
     private String username;
     private String role;
     private String fullName;
+    private String message;
     
     public LoginResponse() {}
     
@@ -15,6 +16,15 @@ public class LoginResponse {
         this.username = username;
         this.role = role;
         this.fullName = fullName;
+    }
+    
+    public LoginResponse(String token, Long userId, String username, String role, String fullName, String message) {
+        this.token = token;
+        this.userId = userId;
+        this.username = username;
+        this.role = role;
+        this.fullName = fullName;
+        this.message = message;
     }
     
     public String getToken() {
@@ -55,5 +65,13 @@ public class LoginResponse {
     
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+    
+    public String getMessage() {
+        return message;
+    }
+    
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

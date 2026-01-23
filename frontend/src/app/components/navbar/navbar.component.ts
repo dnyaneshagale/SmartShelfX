@@ -43,6 +43,10 @@ import { AuthService } from '../../services/auth.service';
             <mat-icon>analytics</mat-icon>
             Forecast
           </a>
+          <a mat-button routerLink="/admin/approvals" routerLinkActive="active">
+            <mat-icon>how_to_reg</mat-icon>
+            Approvals
+          </a>
         }
         
         @if (isWarehouseManager) {

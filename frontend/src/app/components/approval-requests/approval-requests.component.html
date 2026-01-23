@@ -1,0 +1,80 @@
+<div class="approval-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <div class="header-row">
+          <h2>Manager Approval Requests</h2>
+          <button mat-raised-button color="primary" (click)="toggleView()">
+            {{ showAll ? 'Show Pending Only' : 'Show All Requests' }}
+          </button>
+        </div>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div *ngIf="requests.length === 0" class="no-requests">
+        <mat-icon>inbox</mat-icon>
+        <p>No {{ showAll ? '' : 'pending' }} requests found</p>
+      </div>
+
+      <table mat-table [dataSource]="requests" class="requests-table" *ngIf="requests.length > 0">
+        <!-- Full Name Column -->
+        <ng-container matColumnDef="fullName">
+          <th mat-header-cell *matHeaderCellDef>Full Name</th>
+          <td mat-cell *matCellDef="let request">{{ request.fullName }}</td>
+        </ng-container>
+
+        <!-- Username Column -->
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef>Username</th>
+          <td mat-cell *matCellDef="let request">{{ request.username }}</td>
+        </ng-container>
+
+        <!-- Email Column -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let request">{{ request.email }}</td>
+        </ng-container>
+
+        <!-- Requested At Column -->
+        <ng-container matColumnDef="requestedAt">
+          <th mat-header-cell *matHeaderCellDef>Requested At</th>
+          <td mat-cell *matCellDef="let request">{{ request.requestedAt | date: 'medium' }}</td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let request">
+            <mat-chip [color]="getStatusColor(request.status)" selected>
+              {{ request.status }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let request">
+            <div class="action-buttons" *ngIf="request.status === 'PENDING'">
+              <button mat-raised-button color="primary" (click)="approveRequest(request.id)">
+                <mat-icon>check_circle</mat-icon>
+                Approve
+              </button>
+              <button mat-raised-button color="warn" (click)="rejectRequest(request.id)">
+                <mat-icon>cancel</mat-icon>
+                Reject
+              </button>
+            </div>
+            <span *ngIf="request.status !== 'PENDING'" class="processed-status">
+              {{ request.status }} by {{ request.reviewedBy }}
+            </span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

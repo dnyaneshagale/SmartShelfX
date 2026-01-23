@@ -1,0 +1,56 @@
+.approval-container {
+  padding: 20px;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.header-row h2 {
+  margin: 0;
+}
+
+.no-requests {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.no-requests mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #ccc;
+}
+
+.requests-table {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.action-buttons button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.processed-status {
+  font-style: italic;
+  color: #666;
+}
+
+mat-card {
+  margin: 20px 0;
+}
+
+mat-chip {
+  font-weight: 500;
+}

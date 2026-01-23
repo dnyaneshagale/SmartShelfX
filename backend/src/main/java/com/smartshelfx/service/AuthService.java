@@ -23,6 +23,9 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     
+    @Autowired
+    private ManagerApprovalService managerApprovalService;
+    
     public LoginResponse login(LoginRequest request) {
         // Find user by email
         User user = userRepository.findByEmail(request.getEmail())
@@ -66,12 +69,27 @@ public class AuthService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setFullName(request.getFullName());
-        user.setRole(request.getRole());
         
-        userRepository.save(user);
-        
-        // Generate token and return response
-        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
-        return new LoginResponse(token, user.getId(), user.getUsername(), user.getRole().name(), user.getFullName());
+        // If registering as MANAGER, assign VENDOR role temporarily and create approval request
+        if (request.getRole() == Role.MANAGER) {
+            user.setRole(Role.VENDOR); // Temporary role
+            userRepository.save(user);
+            
+            // Create approval request
+            managerApprovalService.createApprovalRequest(user);
+            
+            // Generate token with VENDOR role (temporary)
+            String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
+            return new LoginResponse(token, user.getId(), user.getUsername(), user.getRole().name(), user.getFullName(), 
+                    "Your manager role request is pending admin approval. You are temporarily assigned as VENDOR.");
+        } else {
+            // For VENDOR, assign role directly
+            user.setRole(request.getRole());
+            userRepository.save(user);
+            
+            // Generate token and return response
+            String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
+            return new LoginResponse(token, user.getId(), user.getUsername(), user.getRole().name(), user.getFullName());
+        }
     }
 }
