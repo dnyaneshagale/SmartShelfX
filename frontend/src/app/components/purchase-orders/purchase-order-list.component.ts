@@ -60,13 +60,16 @@ import { PurchaseOrder } from '../../models/models';
                 </td>
                 <td>{{po.expectedDeliveryDate | date}}</td>
                 <td>
-                  @if (po.status === 'PENDING' && (isVendor || isAdmin)) {
+                  @if (po.status === 'PENDING' && (isVendor || isAdmin || isManager)) {
                     <button mat-raised-button color="primary" (click)="approve(po.id)">
                       Approve
                     </button>
                     <button mat-raised-button color="warn" (click)="reject(po.id)">
                       Reject
                     </button>
+                  }
+                  @if (po.status !== 'PENDING') {
+                    <span class="status-text">{{po.status}}</span>
                   }
                 </td>
               </tr>
@@ -141,6 +144,7 @@ export class PurchaseOrderListComponent implements OnInit {
   userRole: string;
   isVendor: boolean;
   isAdmin: boolean;
+  isManager: boolean;
   userId: number;
 
   constructor(
@@ -151,6 +155,7 @@ export class PurchaseOrderListComponent implements OnInit {
     this.userId = parseInt(localStorage.getItem('userId') || '0');
     this.isVendor = this.userRole === 'VENDOR';
     this.isAdmin = this.userRole === 'ADMIN';
+    this.isManager = this.userRole === 'MANAGER';
   }
 
   ngOnInit(): void {

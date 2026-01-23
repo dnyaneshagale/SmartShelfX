@@ -46,7 +46,7 @@ public class PurchaseOrder {
         if (poNumber == null) {
             poNumber = "PO-" + System.currentTimeMillis();
         }
-        if (expectedDeliveryDate == null && status == Status.APPROVED) {
+        if (expectedDeliveryDate == null) {
             expectedDeliveryDate = LocalDate.now().plusDays(7);
         }
     }
