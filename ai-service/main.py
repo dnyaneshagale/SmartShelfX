@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 import uvicorn
+import os
 
 from forecast_logic import predict_demand
 
@@ -17,10 +18,12 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS configuration for frontend/backend integration
+# CORS configuration - allow all origins for production
+allowed_origins = os.getenv("CORS_ORIGINS", "*").split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins if allowed_origins != ["*"] else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

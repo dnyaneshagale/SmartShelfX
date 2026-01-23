@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: smartshelfx-ai-service
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    region: oregon
+    plan: free
+    branch: main
+    healthCheckPath: /
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: BACKEND_URL
+        sync: false
