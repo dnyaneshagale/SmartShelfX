@@ -14,6 +14,7 @@ import { Chart, ChartConfiguration, ChartData, registerables } from 'chart.js';
 import { DashboardService } from '../../../services/dashboard.service';
 import { StockService } from '../../../services/stock.service';
 import { PurchaseOrderService } from '../../../services/purchase-order.service';
+import * as XLSX from 'xlsx';
 
 Chart.register(...registerables);
 
@@ -953,78 +954,136 @@ export class ReportsComponent implements OnInit {
 
   exportReport(): void {
     const timestamp = new Date().toISOString().split('T')[0];
-    const filename = `SmartShelfX_Report_${timestamp}.csv`;
+    const filename = `SmartShelfX_Report_${timestamp}.xlsx`;
 
-    // Prepare CSV content
-    let csvContent = 'SmartShelfX - Comprehensive Report\n\n';
+    // Create a new workbook
+    const wb = XLSX.utils.book_new();
     
-    // Overview Section
-    csvContent += 'OVERVIEW\n';
-    csvContent += 'Metric,Value,Change\n';
-    csvContent += `Total Revenue,$${this.totalRevenue.toFixed(2)},${this.revenueChange > 0 ? '+' : ''}${this.revenueChange}%\n`;
-    csvContent += `Total Orders,${this.totalOrders},${this.ordersChange > 0 ? '+' : ''}${this.ordersChange}%\n`;
-    csvContent += `Stock Turnover,${this.stockTurnover}x,${this.turnoverChange > 0 ? '+' : ''}${this.turnoverChange}x\n`;
-    csvContent += `Order Fulfillment,${this.orderFulfillment}%,${this.fulfillmentChange > 0 ? '+' : ''}${this.fulfillmentChange}%\n\n`;
-
-    // Category Stock Section
+    // ========== SHEET 1: OVERVIEW ==========
+    const overviewData = [
+      ['SmartShelfX - Report Overview'],
+      ['Generated on:', new Date().toLocaleString()],
+      [],
+      ['Metric', 'Value', 'Change'],
+      ['Total Revenue', `$${this.totalRevenue.toFixed(2)}`, `${this.revenueChange > 0 ? '+' : ''}${this.revenueChange}%`],
+      ['Total Orders', this.totalOrders.toString(), `${this.ordersChange > 0 ? '+' : ''}${this.ordersChange}%`],
+      ['Stock Turnover', `${this.stockTurnover}x`, `${this.turnoverChange > 0 ? '+' : ''}${this.turnoverChange}x`],
+      ['Order Fulfillment', `${this.orderFulfillment}%`, `${this.fulfillmentChange > 0 ? '+' : ''}${this.fulfillmentChange}%`]
+    ];
+    const wsOverview = XLSX.utils.aoa_to_sheet(overviewData);
+    XLSX.utils.book_append_sheet(wb, wsOverview, 'Overview');
+    
+    // ========== SHEET 2: STOCK BY CATEGORY ==========
+    const stockByCategoryData = [
+      ['Stock by Category'],
+      [],
+      ['Category', 'Quantity (units)']
+    ];
     if (this.categoryData.length > 0) {
-      csvContent += 'STOCK BY CATEGORY\n';
-      csvContent += 'Category,Quantity (units)\n';
       this.categoryData.forEach(cat => {
-        csvContent += `${cat.label},${cat.value}\n`;
+        stockByCategoryData.push([cat.label, cat.value.toString()]);
       });
-      csvContent += '\n';
+    } else {
+      stockByCategoryData.push(['No category data available', '']);
     }
-
-    // Low Stock Alerts Section
-    if (this.lowStockAlerts.length > 0) {
-      csvContent += 'LOW STOCK ALERTS\n';
-      csvContent += 'Product,Current Stock,Reorder Level\n';
-      this.lowStockAlerts.forEach(alert => {
-        csvContent += `${alert.productName},${alert.currentStock},${alert.reorderLevel}\n`;
-      });
-      csvContent += '\n';
-    }
-
-    // Vendor Performance Section
-    if (this.vendorPerformance.length > 0) {
-      csvContent += 'VENDOR PERFORMANCE\n';
-      csvContent += 'Vendor,Products,Orders,Fulfillment Rate,Avg Response Time,Rating\n';
-      this.vendorPerformance.forEach(vendor => {
-        csvContent += `${vendor.name},${vendor.products},${vendor.orders},${vendor.fulfillmentRate}%,${vendor.avgResponseTime},${vendor.rating}/5\n`;
-      });
-      csvContent += '\n';
-    }
-
-    // Purchase Order Stats Section
-    csvContent += 'PURCHASE ORDER STATISTICS\n';
-    csvContent += 'Status,Count\n';
-    csvContent += `Total Orders,${this.poStats.total}\n`;
-    csvContent += `Pending,${this.poStats.pending}\n`;
-    csvContent += `Approved,${this.poStats.approved}\n`;
-    csvContent += `Rejected,${this.poStats.rejected}\n\n`;
-
-    // Recent Orders Section
-    if (this.recentOrders.length > 0) {
-      csvContent += 'RECENT PURCHASE ORDERS\n';
-      csvContent += 'Order ID,Product,Vendor,Quantity,Date,Status\n';
-      this.recentOrders.forEach(order => {
-        const orderDate = order.createdAt || order.date;
-        const formattedDate = orderDate ? new Date(orderDate).toLocaleDateString() : 'N/A';
-        csvContent += `#${order.id},${order.productName},${order.vendorName},${order.quantity},${formattedDate},${order.status}\n`;
-      });
-    }
-
-    // Create blob and download
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
+    const wsStockByCategory = XLSX.utils.aoa_to_sheet(stockByCategoryData);
+    XLSX.utils.book_append_sheet(wb, wsStockByCategory, 'Stock by Category');
     
-    link.setAttribute('href', url);
-    link.setAttribute('download', filename);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // ========== SHEET 3: LOW STOCK ALERTS ==========
+    const lowStockData = [
+      ['Low Stock Alerts'],
+      [],
+      ['Product', 'Current Stock', 'Reorder Level']
+    ];
+    if (this.lowStockAlerts.length > 0) {
+      this.lowStockAlerts.forEach(alert => {
+        lowStockData.push([alert.productName, alert.currentStock.toString(), alert.reorderLevel.toString()]);
+      });
+    } else {
+      lowStockData.push(['No low stock alerts', '', '']);
+    }
+    const wsLowStock = XLSX.utils.aoa_to_sheet(lowStockData);
+    XLSX.utils.book_append_sheet(wb, wsLowStock, 'Low Stock Alerts');
+    
+    // ========== SHEET 4: VENDOR PERFORMANCE ==========
+    const vendorPerformanceData = [
+      ['Vendor Performance'],
+      [],
+      ['Vendor', 'Products', 'Orders', 'Fulfillment Rate', 'Avg Response Time', 'Rating']
+    ];
+    if (this.vendorPerformance.length > 0) {
+      this.vendorPerformance.forEach(vendor => {
+        vendorPerformanceData.push([
+          vendor.name,
+          vendor.products.toString(),
+          vendor.orders.toString(),
+          `${vendor.fulfillmentRate}%`,
+          vendor.avgResponseTime,
+          `${vendor.rating}/5`
+        ]);
+      });
+    } else {
+      vendorPerformanceData.push(['No vendor data available', '', '', '', '', '']);
+    }
+    const wsVendorPerformance = XLSX.utils.aoa_to_sheet(vendorPerformanceData);
+    XLSX.utils.book_append_sheet(wb, wsVendorPerformance, 'Vendor Performance');
+    
+    // ========== SHEET 5: PURCHASE ORDER STATISTICS ==========
+    const poStatsData = [
+      ['Purchase Order Statistics'],
+      [],
+      ['Status', 'Count'],
+      ['Total Orders', this.poStats.total.toString()],
+      ['Pending', this.poStats.pending.toString()],
+      ['Approved', this.poStats.approved.toString()],
+      ['Rejected', this.poStats.rejected.toString()]
+    ];
+    const wsPOStats = XLSX.utils.aoa_to_sheet(poStatsData);
+    XLSX.utils.book_append_sheet(wb, wsPOStats, 'PO Statistics');
+    
+    // ========== SHEET 6: RECENT PURCHASE ORDERS ==========
+    const recentOrdersData = [
+      ['Recent Purchase Orders'],
+      [],
+      ['Order ID', 'Product', 'Vendor', 'Quantity', 'Date', 'Status']
+    ];
+    if (this.recentOrders.length > 0) {
+      this.recentOrders.forEach(order => {
+        // Extract product name properly
+        const productName = order.product?.name || order.productName || 'N/A';
+        
+        // Extract vendor name properly
+        const vendorName = order.vendor?.fullName || order.vendor?.username || order.vendorName || 'N/A';
+        
+        // Extract and format date properly
+        let formattedDate = 'N/A';
+        const orderDate = order.createdAt || order.date;
+        if (orderDate) {
+          const date = new Date(orderDate);
+          if (!isNaN(date.getTime())) {
+            formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+          }
+        }
+        
+        recentOrdersData.push([
+          `#${order.id}`,
+          productName,
+          vendorName,
+          order.quantity.toString(),
+          formattedDate,
+          order.status
+        ]);
+      });
+    } else {
+      recentOrdersData.push(['No recent orders available', '', '', '', '', '']);
+    }
+    const wsRecentOrders = XLSX.utils.aoa_to_sheet(recentOrdersData);
+    XLSX.utils.book_append_sheet(wb, wsRecentOrders, 'Recent Purchase Orders');
+    
+    // Generate Excel file and download
+    XLSX.writeFile(wb, filename);
+    
+    console.log('Excel report exported successfully with', this.recentOrders.length, 'recent orders');
   }
+
 }
