@@ -85,6 +85,40 @@ Access Swagger UI: `http://localhost:8080/swagger-ui.html`
 ### Dashboard
 - `GET /api/dashboard/stats` - Get dashboard statistics
 
+### Reports
+- `GET /api/reports/stats` - Get comprehensive report statistics
+  - Stock turnover (COGS/Average Inventory)
+  - Vendor performance with calculated metrics
+  - Actual response times (order creation → approval)
+  - Intelligent 5-star vendor ratings
+
+## Report Calculations
+
+### Stock Turnover
+```
+Stock Turnover = Cost of Goods Sold (COGS) / Average Inventory Value
+- COGS = Total value of approved purchase orders
+- Average Inventory Value = Sum of (current stock × price) for all products
+```
+
+### Vendor Response Time
+```
+Avg Response Time = Average duration between order creation and approval
+- Calculated from actual timestamps (createdAt → approvedAt)
+- Only includes approved orders
+- Displayed in days with 1 decimal precision
+```
+
+### Vendor Rating (5-Star System)
+```
+Rating criteria (based on fulfillment rate and response time):
+- 5 stars: >95% fulfillment + <2 days response
+- 4 stars: >80% fulfillment + <4 days response
+- 3 stars: >60% fulfillment OR <6 days response
+- 2 stars: >40% fulfillment
+- 1 star: <40% fulfillment
+```
+
 ## Project Structure
 ```
 backend/

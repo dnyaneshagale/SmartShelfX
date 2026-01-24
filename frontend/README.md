@@ -74,40 +74,72 @@ Use these credentials to log in:
 
 ### 1. Authentication
 - JWT-based authentication
-- Role-based access control
+- Role-based access control (ADMIN, MANAGER, VENDOR)
 - Auto token refresh
 - Route guards
+- Session management with auto-logout
 
 ### 2. Dashboard
+- Role-specific dashboards (Admin, Manager, Vendor)
 - Total products count
-- Low stock alerts
-- Pending purchase orders
+- Low stock alerts (configurable thresholds)
+- Pending/Approved/Rejected purchase orders
 - Vendor statistics
 - Quick action buttons
+- Real-time data updates
 
 ### 3. Product Management
 - View all products
-- Stock level indicators
-- View forecasts
-- Material table with sorting
+- Stock level indicators (color-coded)
+- View demand forecasts
+- Material table with sorting, pagination, filtering
+- Vendor assignment tracking
+- Category-based organization
 
 ### 4. Stock Transactions
 - Record stock IN/OUT
-- Transaction history
+- Transaction history with timestamps
 - Real-time stock updates
 - Remarks and notes
+- Transaction type filtering
 
 ### 5. Demand Forecasting
 - Select product for forecast
-- AI-powered predictions
+- AI-powered predictions using ARIMA models
 - Visual recommendations
 - Reorder suggestions
+- Forecast accuracy tracking
 
 ### 6. Purchase Orders
 - View all purchase orders
 - Status tracking (Pending, Approved, Rejected, Completed)
-- Approve/Reject workflow
-- Vendor information
+- Approve/Reject workflow (Manager/Vendor roles)
+- Vendor information display
+- Order history and audit trail
+
+### 7. Reports & Analytics
+- **Excel Export**: Multi-sheet .xlsx files with 6 sections
+  - Overview (KPIs with trends)
+  - Stock by Category
+  - Low Stock Alerts
+  - Vendor Performance (with ratings)
+  - Purchase Order Statistics
+  - Recent Purchase Orders
+- **Smart Calculations**:
+  - Stock Turnover: COGS/Average Inventory
+  - Vendor Response Time: Actual duration calculation
+  - Vendor Ratings: 5-star system based on fulfillment & speed
+- **Interactive Charts**: Line, Bar, and Pie charts using Chart.js
+- **Date Range Filters**: 7d, 30d, 90d, 1y options
+- **Real-time Updates**: Auto-refresh on data changes
+
+### 8. Mobile Responsive UI
+- Hamburger menu navigation
+- Touch-optimized interface
+- Smooth animations and transitions
+- Safe area support for mobile devices
+- Adaptive layouts for all screen sizes
+- Cross-platform compatibility
 
 ## 🎨 UI Components
 
@@ -145,21 +177,27 @@ Output will be in `dist/` directory.
 
 ## 📦 Key Dependencies
 
-- **Angular 19**: Latest Angular framework
-- **Angular Material 19**: Material Design components
-- **RxJS 7.8**: Reactive programming
-- **TypeScript 5.5**: Type safety
+- **Angular 19**: Latest Angular framework with standalone components
+- **Angular Material 19**: Material Design 3 components
+- **RxJS 7.8**: Reactive programming with observables
+- **TypeScript 5.5**: Type safety and modern JavaScript
+- **Chart.js 4.x**: Data visualization and interactive charts
+- **SheetJS (xlsx)**: Excel file generation with multi-sheet support
 
 ## 🎯 Routing
 
 | Route | Component | Guard | Description |
 |-------|-----------|-------|-------------|
 | `/login` | LoginComponent | - | User authentication |
-| `/dashboard` | DashboardComponent | ✓ | Main dashboard |
-| `/products` | ProductListComponent | ✓ | Product list |
-| `/stock` | StockTransactionComponent | ✓ | Stock management |
-| `/forecast` | ForecastViewComponent | ✓ | Demand forecasting |
-| `/purchase-orders` | PurchaseOrderListComponent | ✓ | Purchase orders |
+| `/admin/dashboard` | AdminDashboardComponent | ✓ | Admin overview with system stats |
+| `/manager/dashboard` | ManagerDashboardComponent | ✓ | Manager view with approvals |
+| `/vendor/dashboard` | VendorDashboardComponent | ✓ | Vendor portal with orders |
+| `/warehouse/dashboard` | WarehouseDashboardComponent | ✓ | Warehouse stock management |
+| `/admin/products` | ProductListComponent | ✓ | Product catalog management |
+| `/admin/stock` | StockTransactionComponent | ✓ | Stock IN/OUT operations |
+| `/admin/forecast` | ForecastViewComponent | ✓ | AI demand forecasting |
+| `/admin/purchase-orders` | PurchaseOrderListComponent | ✓ | Purchase order management |
+| `/admin/reports` | ReportsComponent | ✓ | Analytics & Excel export |
 
 ## 🔐 Security Features
 
@@ -177,9 +215,11 @@ Output will be in `dist/` directory.
 
 ## 📱 Responsive Design
 
-- Desktop: Full feature set with sidebar navigation
-- Tablet: Optimized grid layouts
-- Mobile: Single column layouts, touch-friendly
+- **Desktop**: Full feature set with sidebar navigation and expanded views
+- **Tablet**: Optimized grid layouts with collapsible sections
+- **Mobile**: Hamburger menu, single column layouts, touch-friendly buttons
+- **Animations**: Smooth transitions, loading states, and user feedback
+- **Safe Areas**: Support for notches and system UI on mobile devices
 
 ## 🐛 Troubleshooting
 

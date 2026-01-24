@@ -1,9 +1,10 @@
 <div align="center">
 
-# 🏪 SmartShelfX
+# [🏪 SmartShelfX](https://smartshelfx.netlify.app/login)
 
 ### *AI-Powered Inventory Management & Demand Forecasting System*
 
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_App-success?style=for-the-badge)](https://smartshelfx.netlify.app/login)
 [![Angular](https://img.shields.io/badge/Angular-19-DD0031?style=for-the-badge&logo=angular&logoColor=white)](https://angular.io/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.1-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)](https://spring.io/projects/spring-boot)
 [![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
@@ -15,7 +16,7 @@
 
 *A production-ready full-stack solution demonstrating microservices architecture, AI/ML integration, and modern enterprise development practices*
 
-[Features](#-key-features) • [Tech Stack](#-technology-stack) • [Installation](#-installation) • [Architecture](#-system-architecture) • [API Docs](#-api-endpoints) • [Demo](#-demo-credentials)
+**🚀 [Try Live Demo](https://smartshelfx.netlify.app/login) | 📚 [Features](#-key-features) | 🛠️ [Tech Stack](#-technology-stack) | 📖 [Installation](#-installation) | 🏗️ [Architecture](#-system-architecture) | 🔑 [Demo Credentials](#-demo-credentials)**
 
 </div>
 
@@ -28,124 +29,448 @@
 ### 🎯 Problem Statement
 
 Traditional inventory management systems face critical challenges:
-- **Manual forecasting** leads to costly stockouts (lost sales) or overstocking (tied capital)
-- **Delayed vendor communication** creates procurement bottlenecks and inefficiencies
-- **Lack of real-time insights** results in reactive decision-making instead of proactive planning
-- **Fragmented workflows** across stakeholders (Admin, Manager, Vendor, Warehouse) cause coordination issues
-- **No predictive capabilities** to anticipate demand fluctuations and seasonal trends
+
+| Challenge | Impact |
+|-----------|--------|
+| 📉 **Manual forecasting** | Costly stockouts (lost sales) or overstocking (tied capital) |
+| ⏰ **Delayed vendor communication** | Procurement bottlenecks and operational inefficiencies |
+| 🔍 **Lack of real-time insights** | Reactive decision-making instead of proactive planning |
+| 🔀 **Fragmented workflows** | Poor coordination across Admin, Manager, and Vendor roles |
+| 📊 **No predictive capabilities** | Unable to anticipate demand fluctuations and seasonal trends |
 
 ### 💡 Our Solution
 
 SmartShelfX delivers an intelligent, automated approach:
-- **🤖 AI-powered demand forecasting** using ARIMA time-series models achieving 85%+ prediction accuracy
-- **⚡ Automated approval workflows** streamlining manager-vendor communication for stock requests
-- **📊 Real-time role-specific dashboards** providing actionable KPIs and business intelligence
-- **🔐 Enterprise-grade security** with JWT authentication and granular role-based access control
-- **📈 Intelligent automation** generating purchase orders based on predicted demand and reorder points
-- **🎨 Modern, responsive UX** with Angular Material Design 3 and mobile-first approach
+
+<div align="center">
+
+| Feature | Benefit |
+|---------|---------|
+| 🤖 **AI-Powered Forecasting** | ARIMA time-series models achieving 85%+ prediction accuracy |
+| ⚡ **Automated Workflows** | Streamlined manager-vendor communication for stock requests |
+| 📊 **Role-Specific Dashboards** | Real-time KPIs for Admin, Manager, and Vendor roles |
+| 🔐 **Enterprise Security** | JWT authentication with granular role-based access control |
+| 📈 **Intelligent Automation** | Auto-generate purchase orders based on demand predictions |
+| 🎨 **Modern UX** | Angular Material Design 3 with mobile-first responsive design |
+
+</div>
 
 ---
+
+<div align="center">
 
 ## ✨ Key Features
 
+</div>
+
 ### 📊 Inventory Management
-- ✅ **Real-time stock tracking** - Automatic updates on all transactions with complete audit trails
-- ✅ **Smart low-stock alerts** - Configurable reorder points with multi-channel notifications
-- ✅ **Comprehensive product catalog** - SKU tracking, categories, vendor assignments, pricing
-- ✅ **Transaction history** - Complete audit logs for Stock IN/OUT operations with timestamps
-- ✅ **Multi-vendor ecosystem** - Product-supplier relationships with performance tracking
+
+<table>
+<tr>
+<td width="50%">
+
+✅ **Real-time stock tracking**
+- Automatic updates on all transactions
+- Complete audit trails with timestamps
+- Stock IN/OUT monitoring
+
+</td>
+<td width="50%">
+
+✅ **Smart low-stock alerts**
+- Configurable reorder points
+- Multi-channel notifications
+- Proactive stock management
+
+</td>
+</tr>
+<tr>
+<td>
+
+✅ **Comprehensive product catalog**
+- SKU tracking system
+- Category management
+- Vendor assignments
+- Dynamic pricing
+
+</td>
+<td>
+
+✅ **Multi-vendor ecosystem**
+- Product-supplier relationships
+- Performance tracking
+- Automated coordination
+
+</td>
+</tr>
+</table>
 
 ### 🤖 AI-Powered Forecasting
-- ✅ **ARIMA time-series forecasting** - Statistical modeling with seasonal trend decomposition
-- ✅ **Ensemble prediction methods** - Combining Moving Average, Weighted Average, Linear Trend
-- ✅ **Historical pattern analysis** - Learning from past sales data to predict future demand
-- ✅ **RESTful AI microservice** - Scalable FastAPI architecture with async processing
-- ✅ **Automated forecast refresh** - Scheduled updates ensuring prediction accuracy
-- ✅ **Confidence intervals** - Statistical uncertainty measurement for better planning
+
+<table>
+<tr>
+<td width="50%">
+
+✅ **ARIMA time-series forecasting**
+- Statistical modeling
+- Seasonal trend decomposition
+- 85%+ accuracy rate
+
+</td>
+<td width="50%">
+
+✅ **Ensemble prediction methods**
+- Moving Average
+- Weighted Average
+- Linear Trend analysis
+
+</td>
+</tr>
+<tr>
+<td>
+
+✅ **Historical pattern analysis**
+- Learn from past sales data
+- Predict future demand
+- Confidence intervals
+
+</td>
+<td>
+
+✅ **RESTful AI microservice**
+- Scalable FastAPI architecture
+- Async processing
+- Auto-refresh forecasts
+
+</td>
+</tr>
+</table>
 
 ### 🤝 Vendor Management & Purchase Orders
-- ✅ **Stock approval workflow** - Manager requests → Vendor approves → Automatic stock updates
-- ✅ **Full PO lifecycle tracking** - Pending → Approved → Completed status management
-- ✅ **Vendor portal dashboard** - Dedicated UI showing assigned products and approval requests
-- ✅ **Multi-vendor support** - Product-vendor mapping with flexible assignment rules
-- ✅ **Request tracking** - Requester identification, timestamps, quantities, approval status
-- ✅ **Status-driven actions** - Context-aware buttons based on current order state
+
+<table>
+<tr>
+<td width="50%">
+
+✅ **Stock approval workflow**
+- Manager requests stock
+- Vendor approves/rejects
+- Automatic stock updates
+
+</td>
+<td width="50%">
+
+✅ **Full PO lifecycle tracking**
+- Pending → Approved → Completed
+- Real-time status monitoring
+- Request tracking with timestamps
+
+</td>
+</tr>
+<tr>
+<td>
+
+✅ **Vendor portal dashboard**
+- Dedicated vendor UI
+- Assigned products view
+- Approval request management
+
+</td>
+<td>
+
+✅ **Multi-vendor support**
+- Flexible product-vendor mapping
+- Status-driven actions
+- Context-aware interfaces
+
+</td>
+</tr>
+</table>
 
 ### 👥 User Management & Security
-- ✅ **Role-based access control (RBAC)** - Admin, Manager, Vendor, Warehouse roles with permissions
-- ✅ **JWT authentication** - Stateless token-based sessions with automatic refresh
-- ✅ **Protected routes** - Frontend route guards and backend authorization interceptors
-- ✅ **User profile management** - Full name, role assignment, active/inactive status
-- ✅ **Session security** - Auto-logout on token expiry, secure token storage
-- ✅ **Password encryption** - BCrypt hashing for secure credential storage
+
+<table>
+<tr>
+<td width="33%">
+
+✅ **Role-based access (RBAC)**
+- 👨‍💼 **Admin** - Full system control
+- 👔 **Manager** - Operations oversight
+- 🏢 **Vendor** - Product & order management
+
+</td>
+<td width="33%">
+
+✅ **JWT authentication**
+- Stateless token sessions
+- Automatic token refresh
+- Protected routes
+- Secure storage
+
+</td>
+<td width="33%">
+
+✅ **Enterprise security**
+- BCrypt password hashing
+- Auto-logout on expiry
+- Frontend route guards
+- Backend authorization
+
+</td>
+</tr>
+</table>
 
 ### 📈 Analytics & Reporting
-- ✅ **Interactive dashboards** - Role-specific KPIs with real-time data aggregation
-- ✅ **CSV export functionality** - Generate reports for external analysis and auditing
-- ✅ **Advanced visualizations** - Line charts, Bar charts, Pie charts using Chart.js
-- ✅ **Comprehensive reports** - Stock levels, order history, forecast accuracy, vendor performance
-- ✅ **Date range filtering** - Historical analysis with custom time periods
-- ✅ **Revenue tracking** - Sales analytics with trend analysis
+
+<table>
+<tr>
+<td width="50%">
+
+✅ **Excel export (6 sheets)**
+- 📋 Overview with KPIs
+- 📦 Stock by Category
+- ⚠️ Low Stock Alerts
+- 🏪 Vendor Performance
+- 📊 PO Statistics
+- 📝 Recent Orders
+
+</td>
+<td width="50%">
+
+✅ **Smart calculations**
+- 📊 Stock Turnover (COGS/Avg Inventory)
+- ⏱️ Vendor Response Time (actual duration)
+- ⭐ Intelligent 5-star ratings
+- 📅 Date range filtering (7d, 30d, 90d, 1y)
+
+</td>
+</tr>
+<tr>
+<td>
+
+✅ **Interactive visualizations**
+- Line charts for trends
+- Bar charts for comparisons
+- Pie charts for distribution
+- Chart.js powered
+
+</td>
+<td>
+
+✅ **Role-specific dashboards**
+- Real-time data aggregation
+- Customized KPIs per role
+- Revenue tracking
+- Forecast accuracy metrics
+
+</td>
+</tr>
+</table>
 
 ### 📱 Modern UI/UX
-- ✅ **Angular Material Design 3** - Latest Material components with responsive layouts
-- ✅ **Dynamic navigation** - Role-based sidebars with permission-driven menu items
-- ✅ **Real-time notifications** - Toast messages and alerts for critical events
-- ✅ **Reactive forms** - Comprehensive validation with custom validators and error messages
-- ✅ **Professional data tables** - MatTable with sorting, pagination, search, bulk actions
-- ✅ **Mobile-responsive** - Seamless experience across desktop, tablet, and mobile devices
+
+<table>
+<tr>
+<td width="33%">
+
+🎨 **Material Design 3**
+- Latest Angular Material 19
+- Responsive layouts
+- Professional components
+- Accessibility compliant
+
+</td>
+<td width="33%">
+
+📱 **Mobile-First Design**
+- Hamburger menu navigation
+- Touch-optimized interface
+- Smooth animations
+- Safe area support
+
+</td>
+<td width="33%">
+
+⚡ **Performance**
+- Reactive forms
+- Professional data tables
+- Real-time notifications
+- Cross-platform compatible
+
+</td>
+</tr>
+</table>
 
 ---
 
+<div align="center">
+
 ## 🛠️ Technology Stack
 
-### **Frontend** (Port 4200)
-| Technology | Version | Purpose |
-|------------|---------|----------|
-| **Angular** | 19.0 | Modern TypeScript framework with signals and standalone components |
-| **Angular Material** | 19.0 | Material Design 3 UI components with accessibility |
-| **TypeScript** | 5.5 | Type-safe development with advanced type inference |
-| **Chart.js** | 4.x | Interactive data visualization library |
-| **RxJS** | 7.x | Reactive programming with observables and operators |
+*Modern, scalable, and production-ready technologies*
 
-### **Backend** (Port 8080)
-| Technology | Version | Purpose |
-|------------|---------|----------|
-| **Java** | 21 LTS | Latest Java with virtual threads and pattern matching |
-| **Spring Boot** | 3.2.1 | Production-ready microservices framework |
-| **Spring Security** | 6.x | JWT authentication with stateless sessions |
-| **Spring Data JPA** | 3.x | Hibernate ORM with query optimization and caching |
-| **Maven** | 3.9 | Dependency management and build automation |
-| **MySQL Connector** | 8.0 | JDBC driver for MySQL connectivity |
-| **JWT (JJWT)** | 0.11.x | JSON Web Token creation and validation |
+</div>
 
-### **AI/ML Service** (Port 8000)
-| Technology | Version | Purpose |
-|------------|---------|----------|
-| **Python** | 3.11 | AI service runtime with asyncio support |
-| **FastAPI** | 0.109 | High-performance async API framework |
-| **NumPy** | 1.26 | Numerical computing and array operations |
-| **Pandas** | 2.1 | Data manipulation and time-series analysis |
-| **Scikit-learn** | 1.4 | Machine learning library with preprocessing |
-| **Statsmodels** | 0.14 | ARIMA time-series forecasting models |
-| **Uvicorn** | 0.27 | ASGI server for production deployment |
+### **Frontend** 🎨 (Port 4200)
 
-### **Database**
-| Technology | Version | Purpose |
-|------------|---------|----------|
-| **MySQL** | 8.0.44 | Relational database with InnoDB engine |
-| **JPA/Hibernate** | 3.x | ORM with lazy/eager loading strategies |
-| **HikariCP** | - | High-performance JDBC connection pooling |
+<table>
+<tr>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+<tr>
+<td><img src="https://angular.io/assets/images/logos/angular/angular.svg" width="20"/> <b>Angular</b></td>
+<td>19.0</td>
+<td>Modern TypeScript framework with signals and standalone components</td>
+</tr>
+<tr>
+<td><img src="https://material.angular.io/assets/img/angular-material-logo.svg" width="20"/> <b>Angular Material</b></td>
+<td>19.0</td>
+<td>Material Design 3 UI components with accessibility</td>
+</tr>
+<tr>
+<td>📘 <b>TypeScript</b></td>
+<td>5.5</td>
+<td>Type-safe development with advanced type inference</td>
+</tr>
+<tr>
+<td>📊 <b>Chart.js</b></td>
+<td>4.x</td>
+<td>Interactive data visualization library</td>
+</tr>
+<tr>
+<td>📑 <b>SheetJS (xlsx)</b></td>
+<td>Latest</td>
+<td>Excel file generation with multi-sheet support</td>
+</tr>
+<tr>
+<td>🔄 <b>RxJS</b></td>
+<td>7.x</td>
+<td>Reactive programming with observables and operators</td>
+</tr>
+</table>
 
-### **DevOps & Tools**
+### **Backend** ⚙️ (Port 8080)
+
+<table>
+<tr>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+<tr>
+<td>☕ <b>Java</b></td>
+<td>21 LTS</td>
+<td>Latest Java with virtual threads and pattern matching</td>
+</tr>
+<tr>
+<td>🍃 <b>Spring Boot</b></td>
+<td>3.2.1</td>
+<td>Production-ready microservices framework</td>
+</tr>
+<tr>
+<td>🔐 <b>Spring Security</b></td>
+<td>6.x</td>
+<td>JWT authentication with stateless sessions</td>
+</tr>
+<tr>
+<td>🗄️ <b>Spring Data JPA</b></td>
+<td>3.x</td>
+<td>Hibernate ORM with query optimization and caching</td>
+</tr>
+<tr>
+<td>📦 <b>Maven</b></td>
+<td>3.9</td>
+<td>Dependency management and build automation</td>
+</tr>
+<tr>
+<td>🎫 <b>JWT (JJWT)</b></td>
+<td>0.11.x</td>
+<td>JSON Web Token creation and validation</td>
+</tr>
+</table>
+
+### **AI/ML Service** 🤖 (Port 8000)
+
+<table>
+<tr>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+<tr>
+<td>🐍 <b>Python</b></td>
+<td>3.11</td>
+<td>AI service runtime with asyncio support</td>
+</tr>
+<tr>
+<td>⚡ <b>FastAPI</b></td>
+<td>0.109</td>
+<td>High-performance async API framework</td>
+</tr>
+<tr>
+<td>🔢 <b>NumPy</b></td>
+<td>1.26</td>
+<td>Numerical computing and array operations</td>
+</tr>
+<tr>
+<td>🐼 <b>Pandas</b></td>
+<td>2.1</td>
+<td>Data manipulation and time-series analysis</td>
+</tr>
+<tr>
+<td>🧠 <b>Scikit-learn</b></td>
+<td>1.4</td>
+<td>Machine learning library with preprocessing</td>
+</tr>
+<tr>
+<td>📈 <b>Statsmodels</b></td>
+<td>0.14</td>
+<td>ARIMA time-series forecasting models</td>
+</tr>
+</table>
+
+### **Database** 🗄️
+
+<table>
+<tr>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+<tr>
+<td>🐬 <b>MySQL</b></td>
+<td>8.0.44</td>
+<td>Relational database with InnoDB engine</td>
+</tr>
+<tr>
+<td>🔄 <b>JPA/Hibernate</b></td>
+<td>3.x</td>
+<td>ORM with lazy/eager loading strategies</td>
+</tr>
+<tr>
+<td>⚡ <b>HikariCP</b></td>
+<td>-</td>
+<td>High-performance JDBC connection pooling</td>
+</tr>
+</table>
+
+### **DevOps & Tools** 🛠️
+
+<div align="center">
+
+```mermaid
+graph LR
+    A[Git] --> B[Version Control]
+    C[Maven] --> D[Build Automation]
+    E[npm] --> F[Package Management]
+    G[VS Code] --> H[Development IDE]
+    I[Postman] --> J[API Testing]
+    K[MySQL Workbench] --> L[Database Design]
 ```
-├── Git                    → Version control and collaboration
-├── Maven                  → Build automation and dependency management
-├── npm                    → Node package management
-├── VS Code                → Primary IDE with extensions
-├── Postman                → API testing and documentation
-└── MySQL Workbench        → Database management and design
-```
+
+</div>
 
 ---
 
@@ -189,99 +514,385 @@ SmartShelfX delivers an intelligent, automated approach:
 
 ---
 
+<div align="center">
+
 ## 🚀 Quick Start
 
-### Prerequisites
-- Java 17+
-- Maven 3.6+
-- MySQL 8.0+
-- Python 3.9+
+*Get up and running in 5 simple steps*
 
-### 1️⃣ Setup Database
+</div>
+
+### 📋 Prerequisites
+
+<table>
+<tr>
+<td align="center" width="20%">
+<img src="https://www.oracle.com/a/ocom/img/cb71-java-logo.png" width="50"/><br/>
+<b>Java 17+</b><br/>
+(JDK 21 recommended)
+</td>
+<td align="center" width="20%">
+<img src="https://nodejs.org/static/images/logo.svg" width="50"/><br/>
+<b>Node.js 18+</b><br/>
+and npm
+</td>
+<td align="center" width="20%">
+<img src="https://maven.apache.org/images/maven-logo-black-on-white.png" width="50"/><br/>
+<b>Maven 3.6+</b>
+</td>
+<td align="center" width="20%">
+<img src="https://www.mysql.com/common/logos/logo-mysql-170x115.png" width="50"/><br/>
+<b>MySQL 8.0+</b>
+</td>
+<td align="center" width="20%">
+<img src="https://www.python.org/static/community_logos/python-logo.png" width="50"/><br/>
+<b>Python 3.9+</b>
+</td>
+</tr>
+</table>
+
+---
+
+### 1️⃣ **Setup Database**
+
 ```bash
+# Login to MySQL
+mysql -u root -p
+
+# Execute schema and seed data
 mysql -u root -p < database/schema.sql
 mysql -u root -p < database/seed_data.sql
 ```
 
-### 2️⃣ Start AI Service
+---
+
+### 2️⃣ **Start AI Service** 🤖
+
 ```bash
 cd ai-service
+
+# Create virtual environment
 python -m venv venv
-venv\Scripts\activate  # Windows: venv\Scripts\activate
+
+# Activate (Windows)
+venv\Scripts\activate
+
+# Activate (Linux/Mac)
+# source venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Start service
 python main.py
 ```
-🟢 AI Service: http://localhost:8000
 
-### 3️⃣ Start Backend
+<div align="center">
+
+🟢 **AI Service Running:** `http://localhost:8000`
+
+</div>
+
+---
+
+### 3️⃣ **Start Backend** ⚙️
+
 ```bash
 cd backend
+
+# Build and run
 mvn spring-boot:run
 ```
-🟢 Backend: http://localhost:8080  
-📚 API Docs: http://localhost:8080/swagger-ui.html
 
-### 4️⃣ Test Integration
+<div align="center">
+
+🟢 **Backend Running:** `http://localhost:8080`  
+📚 **API Documentation:** `http://localhost:8080/swagger-ui.html`
+
+</div>
+
+---
+
+### 4️⃣ **Start Frontend** 🎨
+
 ```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+```
+
+<div align="center">
+
+🟢 **Frontend Running:** `http://localhost:4200`
+
+</div>
+
+---
+
+### 5️⃣ **Test Integration** ✅
+
+```bash
+# Run integration tests
 python test_integration.py
 ```
 
+<div align="center">
+
+🎉 **All services are now running!**
+
+</div>
+
 ---
 
-## 🎯 Features
+<div align="center">
 
-### ✅ Implemented (Backend + AI)
+## 📊 Latest Updates (v1.1.0)
 
-**Authentication & Authorization**
+*What's New in This Release*
+
+</div>
+
+### ✨ New Features
+
+<table>
+<tr>
+<td width="33%" align="center">
+
+📑 **Excel Reports**
+
+Multi-sheet .xlsx export with 6 organized sections
+
+📋 Overview  
+📦 Stock by Category  
+⚠️ Low Stock Alerts  
+🏪 Vendor Performance  
+📊 PO Statistics  
+📝 Recent Orders
+
+</td>
+<td width="33%" align="center">
+
+📱 **Mobile Responsive UI**
+
+Touch-optimized interface for all devices
+
+🍔 Hamburger menu  
+✨ Smooth animations  
+📐 Adaptive layouts  
+🔒 Safe area support  
+🎨 Modern transitions
+
+</td>
+<td width="33%" align="center">
+
+📈 **Enhanced Dashboards**
+
+Fixed and improved metrics
+
+👥 Accurate user counts  
+📉 Low stock alerts  
+✅ PO approval stats  
+📊 Real-time updates  
+🎯 Role-specific KPIs
+
+</td>
+</tr>
+</table>
+
+---
+
+### 🔧 Improvements
+
+<table>
+<tr>
+<td width="50%">
+
+#### 📊 Stock Turnover Calculation
+**Before:** Hardcoded 0x value  
+**After:** `COGS / Average Inventory`
+
+- Uses actual approved purchase orders
+- Calculates real inventory value
+- Provides meaningful business metrics
+
+</td>
+<td width="50%">
+
+#### ⏱️ Vendor Response Time
+**Before:** Random dummy data (2-5 days)  
+**After:** Actual duration calculation
+
+- Measures `createdAt → approvedAt`
+- Based on real timestamps
+- Accurate performance tracking
+
+</td>
+</tr>
+</table>
+
+#### ⭐ Intelligent 5-Star Rating System
+
+<div align="center">
+
+| Rating | Criteria | Description |
+|--------|----------|-------------|
+| ⭐⭐⭐⭐⭐ | >95% fulfillment + <2 days | Excellent Performance |
+| ⭐⭐⭐⭐ | >80% fulfillment + <4 days | Very Good Performance |
+| ⭐⭐⭐ | >60% fulfillment OR <6 days | Good Performance |
+| ⭐⭐ | >40% fulfillment | Needs Improvement |
+| ⭐ | <40% fulfillment | Poor Performance |
+
+</div>
+
+#### 📦 Additional Improvements
+
+<table>
+<tr>
+<td width="50%">
+
+✅ **Warehouse Dashboard**
+- Improved low stock count
+- Excludes out-of-stock items
+- Shows reorder products list
+- Better inventory visibility
+
+</td>
+<td width="50%">
+
+✅ **Admin Dashboard**
+- Fixed total users query
+- Added PO approval counts
+- Real-time rejection stats
+- Enhanced data accuracy
+
+</td>
+</tr>
+</table>
+
+---
+
+<div align="center">
+
+## 🎯 System Features
+
+*Comprehensive functionality for modern inventory management*
+
+</div>
+
+### ✅ Fully Implemented
+
+<table>
+<tr>
+<td width="50%">
+
+#### 🔐 **Authentication & Authorization**
 - JWT-based authentication
-- Role-based access (ADMIN, MANAGER, VENDOR)
+- Role-based access control
+  - 👨‍💼 **ADMIN** - System administration
+  - 👔 **MANAGER** - Operations management
+  - 🏢 **VENDOR** - Product & order handling
+- Secure session management
+- Auto token refresh
 
-**Product Management**
-- CRUD operations
-- Vendor assignment
-- Low stock alerts
-- Category filtering
+#### 📦 **Product Management**
+- Complete CRUD operations
+- Vendor assignment system
+- Smart low stock alerts
+- Category-based filtering
+- SKU tracking
+- Price management
 
-**Inventory Tracking**
+#### 📊 **Inventory Tracking**
 - Stock IN/OUT transactions
 - Real-time stock updates
-- Transaction history
+- Complete transaction history
+- Audit trail with timestamps
+- Multi-warehouse support
 
-**AI Forecasting**
-- Demand prediction using ensemble methods
-- Moving average, weighted average, linear trend
-- Integration with FastAPI service
+</td>
+<td width="50%">
 
-**Purchase Orders**
-- Auto-create based on forecast
+#### 🤖 **AI Demand Forecasting**
+- ARIMA time-series predictions
+- Ensemble forecasting methods
+  - Moving Average
+  - Weighted Average
+  - Linear Trend
+- FastAPI microservice integration
+- 85%+ prediction accuracy
+
+#### 📋 **Purchase Order Management**
+- Auto-create based on forecasts
 - Vendor approval workflow
-- Stock auto-update on approval
+- Full lifecycle tracking
+- Status management
+- Automatic stock updates
+- Email notifications
 
-**Dashboard**
-- Statistics overview
-- Low stock count
-- Pending orders
-- Quick insights
+#### 📈 **Dashboard & Analytics**
+- Role-specific dashboards
+- Real-time statistics
+- Low stock monitoring
+- Pending orders tracking
+- Performance insights
+- Revenue analytics
 
-### 🔜 Pending (Frontend)
-- Angular 19 UI
-- Material Design components
-- Responsive layouts
-- Chart visualizations
+</td>
+</tr>
+</table>
 
 ---
 
-## 📊 Technology Stack
+<div align="center">
 
-| Layer | Technology |
-|-------|------------|
-| **Frontend** | Angular 19, Material UI *(pending)* |
-| **Backend** | Java 17, Spring Boot 3.2.1 |
-| **AI Service** | Python 3.9+, FastAPI |
-| **Database** | MySQL 8.0 |
-| **Authentication** | JWT (JSON Web Tokens) |
-| **API Docs** | Swagger/OpenAPI |
-| **Build Tools** | Maven, pip |
+## 🎨 Technology Highlights
+
+</div>
+
+<table>
+<tr>
+<td align="center" width="25%">
+
+### Frontend 🎨
+**Angular 19**  
+Material Design 3  
+TypeScript 5.5  
+Responsive UI
+
+</td>
+<td align="center" width="25%">
+
+### Backend ⚙️
+**Spring Boot 3.2**  
+Java 21 LTS  
+Spring Security  
+RESTful APIs
+
+</td>
+<td align="center" width="25%">
+
+### AI Service 🤖
+**FastAPI**  
+Python 3.11  
+ARIMA Models  
+ML Predictions
+
+</td>
+<td align="center" width="25%">
+
+### Database 🗄️
+**MySQL 8.0**  
+JPA/Hibernate  
+Connection Pooling  
+Optimized Queries
+
+</td>
+</tr>
+</table>
 
 ---
 
@@ -293,7 +904,7 @@ python test_integration.py
 | `manager1` | `password123` | **MANAGER** | Stock requests, forecasts, approval workflows |
 | `vendor1` | `password123` | **VENDOR** | PO approvals, assigned products, order management |
 | `vendor2` | `password123` | **VENDOR** | PO approvals, assigned products, order management |
-| `warehouse1` | `password123` | **WAREHOUSE** | Stock IN/OUT, inventory tracking |
+
 
 **Login URL:** [http://localhost:4200/login](http://localhost:4200/login)
 
