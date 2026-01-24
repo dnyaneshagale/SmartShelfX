@@ -44,19 +44,26 @@ public class ReportService {
         // Total Orders
         stats.setTotalOrders((long) allOrders.size());
         
-        // Stock Turnover (simplified: total out / average stock)
-        long totalProducts = productRepository.count();
-        long totalStockValue = productRepository.findAll().stream()
-            .mapToLong(p -> p.getCurrentStock() != null ? p.getCurrentStock() : 0)
+        // Stock Turnover Calculation
+        // Formula: Cost of Goods Sold (COGS) / Average Inventory Value
+        // COGS = Total value of approved purchase orders (represents goods sold/used)
+        double cogs = allOrders.stream()
+            .filter(po -> PurchaseOrder.Status.APPROVED.equals(po.getStatus()))
+            .filter(po -> po.getTotalCost() != null)
+            .mapToDouble(po -> po.getTotalCost().doubleValue())
             .sum();
         
-        long totalOutTransactions = stockTransactionRepository.findAll().stream()
-            .filter(t -> "OUT".equals(t.getTransactionType()))
-            .mapToLong(t -> t.getQuantity() != null ? t.getQuantity() : 0)
+        // Average Inventory Value = Total value of current stock
+        double avgInventoryValue = productRepository.findAll().stream()
+            .filter(p -> p.getCurrentStock() != null && p.getPrice() != null)
+            .mapToDouble(p -> p.getCurrentStock() * p.getPrice().doubleValue())
             .sum();
         
-        double avgStock = totalStockValue > 0 ? (double) totalStockValue / totalProducts : 1;
-        double stockTurnover = avgStock > 0 ? totalOutTransactions / avgStock : 0;
+        // Calculate turnover ratio
+        double stockTurnover = 0;
+        if (avgInventoryValue > 0 && cogs > 0) {
+            stockTurnover = cogs / avgInventoryValue;
+        }
         stats.setStockTurnover(Math.round(stockTurnover * 10.0) / 10.0);
         
         // Order Fulfillment Rate (approved orders / total orders)
@@ -91,20 +98,56 @@ public class ReportService {
         List<ReportStats.VendorPerformance> vendorPerformance = vendors.stream()
             .map(vendor -> {
                 long productsCount = productRepository.findByVendorId(vendor.getId()).size();
-                long ordersCount = allOrders.stream()
-                    .filter(po -> po.getVendor() != null && po.getVendor().getId().equals(vendor.getId()))
-                    .count();
                 
-                long approvedOrders = allOrders.stream()
+                // Get all orders for this vendor
+                List<PurchaseOrder> vendorOrders = allOrders.stream()
                     .filter(po -> po.getVendor() != null && po.getVendor().getId().equals(vendor.getId()))
+                    .collect(Collectors.toList());
+                
+                long ordersCount = vendorOrders.size();
+                
+                long approvedOrders = vendorOrders.stream()
                     .filter(po -> PurchaseOrder.Status.APPROVED.equals(po.getStatus()))
                     .count();
                 
                 double vendorFulfillmentRate = ordersCount > 0 ? (double) approvedOrders / ordersCount * 100 : 0;
                 
-                // Random avg response time and rating for demo (can be calculated from real data)
-                String avgResponseTime = String.format("%.1f days", 2.0 + Math.random() * 3);
-                int rating = ordersCount > 10 ? (vendorFulfillmentRate > 90 ? 5 : 4) : 3;
+                // Calculate actual average response time (time from creation to approval)
+                double avgResponseDays = 0;
+                List<PurchaseOrder> approvedOrdersList = vendorOrders.stream()
+                    .filter(po -> PurchaseOrder.Status.APPROVED.equals(po.getStatus()))
+                    .filter(po -> po.getCreatedAt() != null && po.getApprovedAt() != null)
+                    .collect(Collectors.toList());
+                
+                if (!approvedOrdersList.isEmpty()) {
+                    long totalHours = approvedOrdersList.stream()
+                        .mapToLong(po -> java.time.Duration.between(po.getCreatedAt(), po.getApprovedAt()).toHours())
+                        .sum();
+                    avgResponseDays = (double) totalHours / approvedOrdersList.size() / 24.0;
+                }
+                
+                String avgResponseTime = approvedOrdersList.isEmpty() 
+                    ? "N/A" 
+                    : String.format("%.1f days", avgResponseDays);
+                
+                // Calculate rating based on fulfillment rate and response time
+                // 5 stars: >95% fulfillment + <2 days response
+                // 4 stars: >80% fulfillment + <4 days response
+                // 3 stars: >60% fulfillment or <6 days response
+                // 2 stars: >40% fulfillment
+                // 1 star: everything else
+                int rating = 1;
+                if (ordersCount > 0) {
+                    if (vendorFulfillmentRate >= 95 && avgResponseDays > 0 && avgResponseDays < 2) {
+                        rating = 5;
+                    } else if (vendorFulfillmentRate >= 80 && avgResponseDays > 0 && avgResponseDays < 4) {
+                        rating = 4;
+                    } else if (vendorFulfillmentRate >= 60 || (avgResponseDays > 0 && avgResponseDays < 6)) {
+                        rating = 3;
+                    } else if (vendorFulfillmentRate >= 40) {
+                        rating = 2;
+                    }
+                }
                 
                 return new ReportStats.VendorPerformance(
                     vendor.getFullName(),
