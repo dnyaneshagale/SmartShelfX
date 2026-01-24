@@ -487,13 +487,13 @@ export class AdminDashboardComponent implements OnInit {
         this.stats = {
           totalProducts: data.totalProducts,
           totalVendors: data.totalVendors,
-          totalUsers: data.totalVendors + 10, // Mock value, update when user endpoint exists
+          totalUsers: data.totalUsers,
           lowStockCount: data.lowStockCount,
           pendingPurchaseOrders: data.pendingPurchaseOrders,
-          approvedPurchaseOrders: 0, // Will be populated from backend
-          rejectedPurchaseOrders: 0, // Will be populated from backend
-          lowStockProducts: [],
-          recentPurchaseOrders: []
+          approvedPurchaseOrders: data.approvedPurchaseOrders || 0,
+          rejectedPurchaseOrders: data.rejectedPurchaseOrders || 0,
+          lowStockProducts: data.reorderProducts || [],
+          recentPurchaseOrders: data.recentPurchaseOrders || []
         };
       },
       error: (error) => console.error('Error loading dashboard stats:', error)

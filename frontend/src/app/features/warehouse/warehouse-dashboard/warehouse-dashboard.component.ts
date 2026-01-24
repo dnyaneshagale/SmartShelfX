@@ -536,10 +536,10 @@ export class WarehouseDashboardComponent implements OnInit {
         this.stats = {
           inventoryCount: data.totalProducts,
           lowStockCount: data.lowStockCount,
-          outOfStockCount: 0, // Calculate from products with stock = 0
+          outOfStockCount: data.outOfStockCount || 0,
           reorderPending: data.pendingPurchaseOrders,
           recentTransactions: [],
-          reorderProducts: []
+          reorderProducts: data.reorderProducts || []
         };
         
         // Load recent transactions
@@ -561,7 +561,8 @@ export class WarehouseDashboardComponent implements OnInit {
   }
 
   viewProduct(productId: number): void {
-    this.router.navigate(['/warehouse/inventory', productId]);
+    // Navigate to reorder requests page where warehouse manager can take action
+    this.router.navigate(['/warehouse/reorder']);
   }
 
   navigateTo(path: string): void {

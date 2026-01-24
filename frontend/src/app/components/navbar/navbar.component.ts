@@ -16,84 +16,89 @@ import { AuthService } from '../../services/auth.service';
       <span class="logo">SmartShelfX</span>
       <span class="role-label">{{getRoleLabel()}}</span>
       
-      <nav class="nav-links">
+      <!-- Mobile Menu Button -->
+      <button mat-icon-button class="mobile-menu-button" (click)="toggleMobileMenu()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      
+      <nav class="nav-links" [class.mobile-menu-open]="mobileMenuOpen">
         @if (isAdmin) {
           <!-- Admin Navigation -->
-          <a mat-button routerLink="/admin/dashboard" routerLinkActive="active">
+          <a mat-button routerLink="/admin/dashboard" routerLinkActive="active" (click)="closeMobileMenu()">
             <mat-icon>dashboard</mat-icon>
-            Dashboard
+            <span>Dashboard</span>
           </a>
-          <a mat-button routerLink="/admin/users" routerLinkActive="active">
+          <a mat-button routerLink="/admin/users" routerLinkActive="active" (click)="closeMobileMenu()">
             <mat-icon>people</mat-icon>
-            Users
+            <span>Users</span>
           </a>
-          <a mat-button routerLink="/admin/products" routerLinkActive="active">
+          <a mat-button routerLink="/admin/products" routerLinkActive="active" (click)="closeMobileMenu()">
             <mat-icon>inventory</mat-icon>
-            Products
+            <span>Products</span>
           </a>
-          <a mat-button routerLink="/admin/vendors" routerLinkActive="active">
+          <a mat-button routerLink="/admin/vendors" routerLinkActive="active" (click)="closeMobileMenu()">
             <mat-icon>store</mat-icon>
-            Vendors
+            <span>Vendors</span>
           </a>
-          <a mat-button routerLink="/admin/purchase-orders" routerLinkActive="active">
+          <a mat-button routerLink="/admin/purchase-orders" routerLinkActive="active" (click)="closeMobileMenu()">
             <mat-icon>receipt</mat-icon>
-            Orders
+            <span>Orders</span>
           </a>
-          <a mat-button routerLink="/admin/forecast" routerLinkActive="active">
+          <a mat-button routerLink="/admin/forecast" routerLinkActive="active" (click)="closeMobileMenu()">
             <mat-icon>analytics</mat-icon>
-            Forecast
+            <span>Forecast</span>
           </a>
-          <a mat-button routerLink="/admin/approvals" routerLinkActive="active">
+          <a mat-button routerLink="/admin/approvals" routerLinkActive="active" (click)="closeMobileMenu()">
             <mat-icon>how_to_reg</mat-icon>
-            Approvals
+            <span>Approvals</span>
           </a>
         }
         
         @if (isWarehouseManager) {
           <!-- Warehouse Manager Navigation -->
-          <a mat-button routerLink="/warehouse/dashboard" routerLinkActive="active">
+          <a mat-button routerLink="/warehouse/dashboard" routerLinkActive="active" (click)="closeMobileMenu()">
             <mat-icon>dashboard</mat-icon>
-            Dashboard
+            <span>Dashboard</span>
           </a>
-          <a mat-button routerLink="/warehouse/inventory" routerLinkActive="active">
+          <a mat-button routerLink="/warehouse/inventory" routerLinkActive="active" (click)="closeMobileMenu()">
             <mat-icon>inventory</mat-icon>
-            Inventory
+            <span>Inventory</span>
           </a>
-          <a mat-button routerLink="/warehouse/stock" routerLinkActive="active">
+          <a mat-button routerLink="/warehouse/stock" routerLinkActive="active" (click)="closeMobileMenu()">
             <mat-icon>swap_horiz</mat-icon>
-            Stock Update
+            <span>Stock Update</span>
           </a>
-          <a mat-button routerLink="/warehouse/reorder" routerLinkActive="active">
+          <a mat-button routerLink="/warehouse/reorder" routerLinkActive="active" (click)="closeMobileMenu()">
             <mat-icon>notification_important</mat-icon>
-            Reorder
+            <span>Reorder</span>
           </a>
-          <a mat-button routerLink="/warehouse/purchase-orders" routerLinkActive="active">
+          <a mat-button routerLink="/warehouse/purchase-orders" routerLinkActive="active" (click)="closeMobileMenu()">
             <mat-icon>receipt</mat-icon>
-            Orders
+            <span>Orders</span>
           </a>
-          <a mat-button routerLink="/warehouse/forecast" routerLinkActive="active">
+          <a mat-button routerLink="/warehouse/forecast" routerLinkActive="active" (click)="closeMobileMenu()">
             <mat-icon>analytics</mat-icon>
-            Forecast
+            <span>Forecast</span>
           </a>
         }
         
         @if (isVendor) {
           <!-- Vendor Navigation -->
-          <a mat-button routerLink="/vendor/dashboard" routerLinkActive="active">
+          <a mat-button routerLink="/vendor/dashboard" routerLinkActive="active" (click)="closeMobileMenu()">
             <mat-icon>dashboard</mat-icon>
-            Dashboard
+            <span>Dashboard</span>
           </a>
-          <a mat-button routerLink="/vendor/products" routerLinkActive="active">
+          <a mat-button routerLink="/vendor/products" routerLinkActive="active" (click)="closeMobileMenu()">
             <mat-icon>inventory</mat-icon>
-            My Products
+            <span>My Products</span>
           </a>
-          <a mat-button routerLink="/vendor/purchase-orders" routerLinkActive="active">
+          <a mat-button routerLink="/vendor/purchase-orders" routerLinkActive="active" (click)="closeMobileMenu()">
             <mat-icon>receipt</mat-icon>
-            Purchase Orders
+            <span>Purchase Orders</span>
           </a>
-          <a mat-button routerLink="/vendor/forecast" routerLinkActive="active">
+          <a mat-button routerLink="/vendor/forecast" routerLinkActive="active" (click)="closeMobileMenu()">
             <mat-icon>analytics</mat-icon>
-            Forecast
+            <span>Forecast</span>
           </a>
         }
       </nav>
@@ -226,13 +231,110 @@ import { AuthService } from '../../services/auth.service';
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
+    .mobile-menu-button {
+      display: none;
+      color: white;
+      margin-right: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .mobile-menu-button:active {
+      transform: scale(0.95);
+    }
+
+    /* Mobile Responsive Styles */
     @media (max-width: 960px) {
-      .nav-links a span {
+      mat-toolbar {
+        padding: 0 8px;
+      }
+
+      .nav-links {
         display: none;
+        position: fixed;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: inherit;
+        flex-direction: column;
+        padding: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        max-height: calc(100vh - 64px);
+        overflow-y: auto;
+        animation: slideDown 0.3s ease-out;
+      }
+
+      .nav-links.mobile-menu-open {
+        display: flex;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .nav-links a {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 12px 16px;
+        margin: 2px 0;
+        border-radius: 8px;
+      }
+
+      .nav-links a:active {
+        transform: scale(0.98);
+      }
+
+      .nav-links a span {
+        display: inline;
+      }
+
+      .mobile-menu-button {
+        display: block;
+        margin-left: auto;
+        margin-right: 12px;
       }
       
       .role-label {
         display: none;
+      }
+
+      .spacer {
+        display: none;
+      }
+
+      .user-info {
+        gap: 8px;
+      }
+
+      .user-info .user-button {
+        padding: 4px 8px;
+        min-width: 40px;
+      }
+
+      .user-info .user-name {
+        display: none;
+      }
+
+      .role-badge {
+        display: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .logo {
+        font-size: 16px;
+        margin-right: 8px;
+      }
+
+      .mobile-menu-button {
+        margin-right: 8px;
       }
     }
   `]
@@ -243,6 +345,7 @@ export class NavbarComponent {
   isWarehouseManager: boolean;
   isVendor: boolean;
   isAdmin: boolean;
+  mobileMenuOpen = false;
 
   constructor(
     private authService: AuthService,
@@ -268,6 +371,14 @@ export class NavbarComponent {
       default:
         return '';
     }
+  }
+
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenuOpen = false;
   }
 
   logout(): void {

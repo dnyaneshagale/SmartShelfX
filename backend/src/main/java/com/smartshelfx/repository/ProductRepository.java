@@ -16,9 +16,15 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.vendor.id = :vendorId")
     List<Product> findByVendorId(@Param("vendorId") Long vendorId);
     
-    @Query("SELECT p FROM Product p WHERE p.currentStock < p.reorderLevel")
+    @Query("SELECT p FROM Product p WHERE p.currentStock > 0 AND p.currentStock <= p.reorderLevel")
     List<Product> findLowStockProducts();
     
-    @Query("SELECT COUNT(p) FROM Product p WHERE p.currentStock < p.reorderLevel")
+    @Query("SELECT COUNT(p) FROM Product p WHERE p.currentStock > 0 AND p.currentStock <= p.reorderLevel")
     Long countLowStockProducts();
+    
+    @Query("SELECT COUNT(p) FROM Product p WHERE p.currentStock = 0")
+    Long countOutOfStockProducts();
+    
+    @Query("SELECT p FROM Product p WHERE p.currentStock = 0")
+    List<Product> findOutOfStockProducts();
 }

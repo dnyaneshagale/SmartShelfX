@@ -121,6 +121,12 @@ export interface PurchaseOrderRequest {
 export interface DashboardStats {
   totalProducts: number;
   lowStockCount: number;
+  outOfStockCount: number;
   pendingPurchaseOrders: number;
+  approvedPurchaseOrders: number;
+  rejectedPurchaseOrders: number;
   totalVendors: number;
+  totalUsers: number;
+  reorderProducts: Product[];
+  recentPurchaseOrders: PurchaseOrder[];
 }

@@ -311,10 +311,10 @@ interface ReportData {
                       @for (order of recentOrders; track order.id) {
                         <tr>
                           <td>#{{order.id}}</td>
-                          <td>{{order.productName}}</td>
-                          <td>{{order.vendorName}}</td>
+                          <td>{{order.product?.name || order.productName || 'N/A'}}</td>
+                          <td>{{order.vendor?.fullName || order.vendor?.username || order.vendorName || 'N/A'}}</td>
                           <td>{{order.quantity}}</td>
-                          <td>{{order.date | date:'short'}}</td>
+                          <td>{{(order.createdAt || order.date) | date:'short'}}</td>
                           <td>
                             <span class="status-badge" [class]="'status-' + order.status.toLowerCase()">
                               {{order.status}}

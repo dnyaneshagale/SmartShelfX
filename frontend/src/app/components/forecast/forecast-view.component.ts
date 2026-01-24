@@ -331,14 +331,40 @@ export class ForecastViewComponent implements OnInit {
   }
 
   loadProducts(): void {
-    this.productService.getAllProducts().subscribe({
-      next: (products) => {
-        this.products = products;
-      },
-      error: (error) => {
-        console.error('Error loading products:', error);
-      }
-    });
+    const userStr = localStorage.getItem('user');
+    if (!userStr) {
+      console.error('No user found in localStorage');
+      return;
+    }
+    
+    const user = JSON.parse(userStr);
+    const userRole = user.role;
+    const userId = user.userId;
+    
+    if (userRole === 'VENDOR' && userId) {
+      // Vendors only see their assigned products
+      console.log('Loading products for vendor:', userId);
+      this.productService.getProductsByVendor(userId).subscribe({
+        next: (products) => {
+          console.log('Vendor products loaded:', products);
+          this.products = products;
+        },
+        error: (error) => {
+          console.error('Error loading vendor products:', error);
+        }
+      });
+    } else {
+      // Admins and Managers see all products
+      console.log('Loading all products for role:', userRole);
+      this.productService.getAllProducts().subscribe({
+        next: (products) => {
+          this.products = products;
+        },
+        error: (error) => {
+          console.error('Error loading products:', error);
+        }
+      });
+    }
   }
 
   generateForecast(): void {
