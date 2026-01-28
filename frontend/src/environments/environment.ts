@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://smartshelfx-backend-542876661339.us-central1.run.app'
+  apiUrl: 'http://localhost:8080/api'
 };
