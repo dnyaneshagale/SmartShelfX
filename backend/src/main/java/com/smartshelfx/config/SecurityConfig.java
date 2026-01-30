@@ -20,7 +20,7 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
     
-    @Value("${cors.allowed.origins:http://localhost:4200}")
+    @Value("${cors.allowed.origins:*}")
     private String allowedOrigins;
     
     @Bean
@@ -50,7 +50,13 @@ public class SecurityConfig {
         
         // Parse allowed origins from environment variable (comma-separated)
         List<String> origins = Arrays.asList(allowedOrigins.split(","));
-        configuration.setAllowedOrigins(origins);
+        
+        // Use allowedOriginPatterns instead of allowedOrigins to support "*" with credentials
+        if (origins.contains("*")) {
+            configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+        } else {
+            configuration.setAllowedOrigins(origins);
+        }
         
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*"));

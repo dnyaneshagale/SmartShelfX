@@ -27,7 +27,7 @@ public class ForecastService {
     private RestTemplate restTemplate;
     
     @Value("${ai.service.url}")
-    private static String AI_SERVICE_URL;
+    private String aiServiceUrl;
     
     public ForecastResponse getForecastBySku(String sku) {
         Product product = productRepository.findBySku(sku)
@@ -39,7 +39,7 @@ public class ForecastService {
         
         try {
             // Call AI service
-            String url = AI_SERVICE_URL + sku;
+            String url = aiServiceUrl + "/forecast/" + sku;
             Map<String, Object> aiResponse = restTemplate.getForObject(url, Map.class);
             
             predictedQuantity = (Integer) aiResponse.get("predictedQuantity");

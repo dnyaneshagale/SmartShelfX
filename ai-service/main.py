@@ -78,17 +78,19 @@ def health_check():
     return {"status": "healthy", "service": "ai-forecast"}
 
 if __name__ == "__main__":
+    port = int(os.getenv("PORT", "8000"))
+    
     print("\n" + "="*50)
     print("SmartShelfX AI Service Starting...")
     print("="*50)
-    print("API Docs: http://localhost:8000/docs")
-    print("Health Check: http://localhost:8000/health")
+    print(f"API Docs: http://localhost:{port}/docs")
+    print(f"Health Check: http://localhost:{port}/health")
     print("="*50 + "\n")
     
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=8000,
+        port=port,
         reload=True,
         log_level="info"
     )
