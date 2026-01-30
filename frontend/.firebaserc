@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "dnyaneshagale-19"
+  },
+  "targets": {
+    "dnyaneshagale-19": {
+      "hosting": {
+        "smartshelfx": [
+          "smartshelfx"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

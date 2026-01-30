@@ -6,6 +6,7 @@ import com.smartshelfx.model.Product;
 import com.smartshelfx.repository.ForecastRepository;
 import com.smartshelfx.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,7 +26,8 @@ public class ForecastService {
     @Autowired
     private RestTemplate restTemplate;
     
-    private static final String AI_SERVICE_URL = "http://localhost:8000/forecast/";
+    @Value("${ai.service.url}")
+    private static String AI_SERVICE_URL;
     
     public ForecastResponse getForecastBySku(String sku) {
         Product product = productRepository.findBySku(sku)
