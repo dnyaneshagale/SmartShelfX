@@ -16,17 +16,20 @@ app = FastAPI(
     title="SmartShelfX AI Service",
     description="Simple demand forecasting for inventory management",
     version="1.0.0"
+    
 )
 
 # CORS configuration - allow all origins for production
 allowed_origins = os.getenv("CORS_ORIGINS", "*").split(",")
 
 app.add_middleware(
+    
     CORSMiddleware,
     allow_origins=allowed_origins if allowed_origins != ["*"] else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+
 )
 
 class ForecastResponse(BaseModel):

@@ -10,7 +10,7 @@ import hashlib
 # Simulated historical sales data for demo
 # In production, this would come from the database via API call
 SAMPLE_SALES_DATA = {
-    "PROD-001": [2, 1, 3, 2, 1, 2, 1],  # Last 7 days
+    "PROD-001": [2, 1, 3, 2, 1, 2, 1],  # 7 Days of sales
     "PROD-002": [5, 4, 3, 2, 6, 4, 2],
     "PROD-003": [1, 2, 1, 3, 4, 2, 1],
     "PROD-004": [8, 6, 5, 7, 9, 5, 7],
@@ -33,7 +33,7 @@ def moving_average(data: List[int], window: int = 7) -> float:
     Returns:
         Moving average value
     """
-    if len(data) == 0:
+    if len(data) == 0: #len(data) < window:
         return 0.0
     
     window = min(window, len(data))
@@ -53,7 +53,7 @@ def weighted_moving_average(data: List[int]) -> float:
         return 0.0
     
     weights = list(range(1, len(data) + 1))
-    weighted_sum = sum(d * w for d, w in zip(data, weights))
+    weighted_sum = sum(d * w for d, w in zip(data, weights)) # sum of data * weight
     total_weight = sum(weights)
     
     return weighted_sum / total_weight if total_weight > 0 else 0.0
@@ -78,8 +78,8 @@ def linear_trend(data: List[int]) -> float:
     x_mean = sum(x) / n
     y_mean = sum(data) / n
     
-    numerator = sum((x[i] - x_mean) * (data[i] - y_mean) for i in range(n))
-    denominator = sum((x[i] - x_mean) ** 2 for i in range(n))
+    numerator = sum((x[i] - x_mean) * (data[i] - y_mean) for i in range(n)) # covariance
+    denominator = sum((x[i] - x_mean) ** 2 for i in range(n)) # variance
     
     if denominator == 0:
         return y_mean
@@ -130,7 +130,8 @@ def predict_demand(sku: str) -> int:
     
     return predicted_quantity
 
-def get_forecast_confidence(data: List[int]) -> str:
+def get_forecast_confidence(data: List[int]) -> str: 
+
     """
     Calculate confidence level based on data variance
     
