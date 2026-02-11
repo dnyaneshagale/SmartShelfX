@@ -28,6 +28,8 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .httpBasic(httpBasic -> httpBasic.disable())  // Disable HTTP Basic authentication
+            .formLogin(formLogin -> formLogin.disable())  // Disable form login
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/health").permitAll()
                 .anyRequest().permitAll()  // Simplified for demo

@@ -67,4 +67,4 @@ local.properties
 *.rar
 
 dbsetup.txt
-backend/src/main/resources/application.properties
+
